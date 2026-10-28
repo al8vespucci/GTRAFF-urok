@@ -1,0 +1,1189 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Бесплатный урок GТрафф</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: sticky course map on the left, one reading column on the right; graphite + gold, single dark look by brand choice */
+:root{
+  --bg:#0c0d0f;
+  --surface:#141519;
+  --surface-2:#1b1d22;
+  --line:#2a2c33;
+  --fg:#edebe4;
+  --muted:#9d9a90;
+  --gold:#d6b25e;
+  --gold-2:#a8863a;
+  --gold-soft:rgba(214,178,94,.12);
+  --gold-line:rgba(214,178,94,.35);
+  --ok:#7cc79a;
+  --ok-soft:rgba(124,199,154,.12);
+  --bad:#e5775f;
+  --bad-soft:rgba(229,119,95,.12);
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Golos Text","Segoe UI",Roboto,system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --r:14px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--bg)}
+a{color:var(--gold)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+h1,h2,h3,h4{font-family:var(--f-display);font-weight:600;line-height:1.18;text-wrap:balance;margin:0}
+p{margin:0}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:rgba(12,13,15,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.topbar-in{display:flex;align-items:center;gap:14px;height:58px;max-width:1240px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--fg)}
+.mark{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(140deg,#e9c977,#9c7a2e);color:#17140c;font-family:var(--f-display);font-weight:700;font-size:13px;letter-spacing:.02em}
+.brand b{font-family:var(--f-display);font-weight:600;font-size:15px;letter-spacing:.04em}
+.prog{flex:1;display:flex;align-items:center;gap:12px;min-width:0}
+.prog-track{flex:1;height:4px;border-radius:4px;background:var(--line);overflow:hidden;max-width:360px;margin-left:auto}
+.prog-track i{display:block;height:100%;width:0;background:var(--gold);transition:width .5s}
+.prog-label{font-size:13px;color:var(--muted);white-space:nowrap}
+.menu-btn{display:none;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:7px 12px;font-size:14px}
+
+/* ---------- shell ---------- */
+.shell{display:grid;grid-template-columns:270px minmax(0,1fr);gap:48px;max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.side{position:sticky;top:calc(env(safe-area-inset-top,0px) + 58px);align-self:start;max-height:calc(100vh - 58px);overflow:auto;padding-block:28px 40px}
+.side h5{font-family:var(--f-body);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;font-weight:600}
+.map{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.map>li>a,.map>li>span{display:flex;gap:10px;align-items:baseline;padding:8px 10px;border-radius:9px;text-decoration:none;color:var(--fg);font-size:15px;line-height:1.35}
+.map>li>a:hover{background:var(--surface)}
+.map .n{font-family:var(--f-mono);font-size:12px;color:var(--gold);min-width:20px}
+.map .locked{color:var(--muted)}
+.map .locked .n{color:var(--muted)}
+.map .soon{margin-left:auto;font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:20px;padding:1px 7px;white-space:nowrap}
+.map ol{list-style:none;margin:2px 0 8px 30px;padding:0;display:grid;gap:0}
+.map ol a{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--muted);text-decoration:none;padding:5px 8px;border-radius:7px}
+.map ol a:hover{color:var(--fg);background:var(--surface)}
+.map ol a .dot{width:7px;height:7px;border-radius:50%;border:1.5px solid var(--muted);flex:none}
+.map ol a.done .dot{background:var(--ok);border-color:var(--ok)}
+
+main{min-width:0;padding-block:28px 120px;max-width:780px}
+
+/* ---------- hero ---------- */
+.hero{padding-block:24px 8px}
+.eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.hero h1{font-size:clamp(34px,6vw,58px);margin-top:14px;letter-spacing:-.01em}
+.hero h1 em{font-style:normal;color:var(--gold)}
+.hero .lead{font-size:19px;color:#cfccc2;margin-top:18px;max-width:36em}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.meta span{font-size:14px;border:1px solid var(--line);border-radius:30px;padding:5px 12px;color:#d8d5cb;background:var(--surface)}
+
+.quote{margin-top:40px;padding:30px 0 4px;border-top:1px solid var(--line)}
+.quote blockquote{margin:0;font-family:var(--f-display);font-weight:500;font-size:clamp(22px,3.4vw,32px);line-height:1.3;letter-spacing:-.005em}
+.quote blockquote::before{content:"«";color:var(--gold)}
+.quote blockquote::after{content:"»";color:var(--gold)}
+.quote figcaption{margin-top:14px;color:var(--muted);font-size:15px}
+.quote figcaption b{color:var(--fg);font-weight:600}
+
+/* ---------- sections ---------- */
+.sec{margin-top:56px}
+.sec>h2{font-size:clamp(22px,3vw,28px)}
+.sec>.sub{color:var(--muted);margin-top:8px}
+.prose{display:grid;gap:14px;margin-top:18px}
+.prose ul,.prose ol{margin:0;padding-left:22px;display:grid;gap:8px}
+.prose li::marker{color:var(--gold)}
+
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:20px}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.step .k{font-family:var(--f-mono);font-size:12px;color:var(--gold)}
+.step b{display:block;margin-top:6px;font-size:16px}
+.step p{font-size:14.5px;color:var(--muted);margin-top:4px;line-height:1.5}
+
+.program{list-style:none;margin:20px 0 0;padding:0;border-top:1px solid var(--line)}
+.program li{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:baseline;padding:14px 0;border-bottom:1px solid var(--line)}
+.program .n{font-family:var(--f-mono);color:var(--gold);font-size:14px}
+.program b{font-weight:600}
+.program small{display:block;color:var(--muted);font-size:14px;margin-top:2px}
+.tag{font-size:12px;border-radius:20px;padding:2px 9px;white-space:nowrap}
+.tag.open{background:var(--ok-soft);color:var(--ok)}
+.tag.wait{border:1px solid var(--line);color:var(--muted)}
+
+.curators{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:18px}
+.cur{display:flex;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.ava{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--gold-soft);border:1px solid var(--gold-line);color:var(--gold);font-family:var(--f-display);font-weight:600}
+.cur b{display:block}
+.cur span{color:var(--muted);font-size:14px}
+
+/* voice panel */
+.voice{margin-top:20px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:grid;gap:14px}
+.voice-row{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;align-items:center}
+.voice label{font-size:14px;color:var(--muted)}
+select,input[type=number],input[type=text],textarea{width:100%;background:var(--surface-2);border:1px solid var(--line);color:var(--fg);border-radius:10px;padding:10px 12px;font:inherit;font-size:15px}
+textarea{resize:vertical;min-height:96px;line-height:1.5}
+input[type=range]{width:100%;accent-color:var(--gold)}
+.hint{font-size:13.5px;color:var(--muted);line-height:1.5}
+
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--gold-line);background:var(--gold-soft);color:var(--gold);border-radius:11px;padding:10px 16px;font-size:15px;font-weight:600;transition:background .2s}
+.btn:hover{background:rgba(214,178,94,.2)}
+.btn.solid{background:var(--gold);color:#17140c;border-color:var(--gold)}
+.btn.solid:hover{background:#e3c06a}
+.btn.ghost{border-color:var(--line);background:transparent;color:var(--fg)}
+.btn svg{width:16px;height:16px;flex:none}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* ---------- module ---------- */
+.module{margin-top:84px;padding-top:40px;border-top:1px solid var(--line)}
+.mod-head .eyebrow{display:flex;gap:10px;align-items:center}
+.mod-head h2{font-size:clamp(28px,4.4vw,42px);margin-top:12px}
+.mod-head .lead{color:#cfccc2;margin-top:14px;font-size:18px}
+.learn{margin-top:22px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px 22px;padding:0;list-style:none}
+.learn li{display:flex;gap:10px;font-size:15.5px;color:#d8d5cb;line-height:1.45}
+.learn li::before{content:"";flex:none;width:6px;height:6px;margin-top:9px;background:var(--gold);transform:rotate(45deg)}
+
+/* video */
+.video{margin-top:30px}
+.video h3{font-size:18px;display:flex;align-items:center;gap:10px}
+.video .sub{color:var(--muted);font-size:14.5px;margin-top:4px}
+.stage{position:relative;margin-top:14px;aspect-ratio:16/9;max-width:100%;border-radius:16px;overflow:hidden;background:radial-gradient(120% 90% at 80% 0%,#1d1a12 0%,#101114 55%,#0b0c0e 100%);border:1px solid var(--line);container-type:inline-size}
+.stage::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(90deg,rgba(255,255,255,.018) 0 1px,transparent 1px 64px),repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 1px,transparent 1px 64px)}
+.scene{position:absolute;inset:0;padding:6cqw 6cqw 15cqw}
+.cap{position:absolute;left:5cqw;right:5cqw;bottom:3.4cqw;z-index:3;text-align:center;font-size:clamp(12px,2.4cqw,20px);line-height:1.35;color:#f3f0e7;text-shadow:0 1px 8px rgba(0,0,0,.6);min-height:2.7em;display:flex;align-items:flex-end;justify-content:center}
+.cap span{background:rgba(10,10,12,.62);padding:.25em .6em;border-radius:.4em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.scene-title{position:absolute;left:5cqw;top:4cqw;z-index:3;font-family:var(--f-display);font-size:clamp(10px,1.9cqw,15px);letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.big-play{position:absolute;inset:0;z-index:5;display:grid;place-items:center;background:rgba(8,8,10,.42);border:0;transition:opacity .3s}
+.big-play span{width:clamp(56px,13cqw,92px);height:clamp(56px,13cqw,92px);border-radius:50%;background:var(--gold);display:grid;place-items:center;box-shadow:0 0 0 10px rgba(214,178,94,.15)}
+.big-play svg{width:38%;height:38%;margin-left:8%;fill:#17140c}
+.big-play[hidden]{display:none}
+.vbar{display:flex;gap:10px;align-items:center;margin-top:10px}
+.vbar .ctrl{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;flex:none}
+.vbar .ctrl svg{width:16px;height:16px;fill:var(--fg)}
+.segs{flex:1;display:flex;gap:4px;min-width:0}
+.segs button{flex:1;height:22px;border:0;background:transparent;padding:9px 0;min-width:0}
+.segs button i{display:block;height:4px;border-radius:3px;background:var(--line);overflow:hidden;position:relative}
+.segs button i b{position:absolute;inset:0;width:0;background:var(--gold)}
+.segs button.past i b{width:100%}
+.vbar .mute{font-size:13px;color:var(--muted);border:1px solid var(--line);background:transparent;border-radius:10px;padding:8px 10px;white-space:nowrap}
+
+/* scene parts */
+.s-split{display:grid;grid-template-columns:1fr 1.2fr;gap:5cqw;height:100%;align-items:center}
+.phone{justify-self:center;width:24cqw;aspect-ratio:9/18;border-radius:3.4cqw;border:.5cqw solid #33353c;background:#0e0f12;overflow:hidden;position:relative;box-shadow:0 2cqw 6cqw rgba(0,0,0,.5)}
+.feed{position:absolute;inset:1.2cqw;display:grid;gap:1.2cqw;animation:feed 7s linear infinite}
+.feed i{display:block;height:13cqw;border-radius:1.4cqw;background:linear-gradient(160deg,#25272d,#191a1e);position:relative}
+.feed i::after{content:"";position:absolute;left:1.2cqw;bottom:1.2cqw;width:55%;height:1cqw;border-radius:1cqw;background:#3a3c43}
+.feed i:nth-child(3n){background:linear-gradient(160deg,#3b3220,#1c1a14)}
+@keyframes feed{to{transform:translateY(-50%)}}
+.s-kick{font-size:clamp(10px,1.8cqw,15px);color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.s-num{font-family:var(--f-mono);font-weight:700;font-size:clamp(28px,9cqw,84px);color:var(--fg);line-height:1;margin-top:1cqw;font-variant-numeric:tabular-nums}
+.s-num.gold{color:var(--gold)}
+.s-note{font-size:clamp(11px,2cqw,17px);color:#cfccc2;margin-top:1.4cqw}
+
+.flowline{display:grid;grid-template-columns:auto 1fr auto 1fr auto;align-items:center;height:100%;gap:1cqw}
+.node{display:grid;justify-items:center;gap:1.2cqw;text-align:center;opacity:0;animation:pop .5s forwards}
+.node .ic{width:13cqw;height:13cqw;border-radius:3cqw;background:var(--surface-2);border:1px solid var(--line);display:grid;place-items:center}
+.node .ic svg{width:48%;height:48%;stroke:var(--gold);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.node b{font-size:clamp(10px,1.9cqw,16px);font-weight:600}
+.node small{font-size:clamp(9px,1.5cqw,13px);color:var(--muted);display:block;margin-top:-.6cqw}
+.pipe{height:.4cqw;background:var(--line);position:relative;border-radius:1cqw;opacity:0;animation:pop .4s forwards}
+.pipe i{position:absolute;top:50%;width:1.4cqw;height:1.4cqw;margin-top:-.7cqw;border-radius:50%;background:var(--gold);box-shadow:0 0 1.4cqw var(--gold);animation:run 1.8s linear infinite}
+.pipe i:nth-child(2){animation-delay:.6s}.pipe i:nth-child(3){animation-delay:1.2s}
+@keyframes run{from{left:0;opacity:0}15%{opacity:1}85%{opacity:1}to{left:100%;opacity:0}}
+@keyframes pop{from{opacity:0;transform:translateY(1.4cqw) scale(.96)}to{opacity:1;transform:none}}
+
+.dots{display:grid;grid-template-columns:repeat(10,1fr);gap:1.4cqw;width:52cqw}
+.dots i{aspect-ratio:1;border-radius:50%;background:var(--gold);opacity:0;transform:scale(.3);animation:dotin .35s forwards}
+.dots i.gone{animation:dotin .35s forwards,dotout .8s forwards}
+@keyframes dotin{to{opacity:1;transform:none}}
+@keyframes dotout{to{opacity:.18;background:var(--bad);transform:scale(.7)}}
+.s-grid{display:grid;grid-template-columns:auto 1fr;gap:6cqw;align-items:center;height:100%}
+
+.pay{display:grid;grid-template-columns:1fr 1.3fr 1fr;align-items:center;height:100%}
+.box{border:1px solid var(--line);background:var(--surface-2);border-radius:2.4cqw;padding:2.4cqw;text-align:center}
+.box b{display:block;font-size:clamp(10px,2cqw,17px)}
+.box small{color:var(--muted);font-size:clamp(9px,1.5cqw,13px)}
+.lane{position:relative;height:12cqw}
+.coin{position:absolute;top:50%;left:0;width:4.4cqw;height:4.4cqw;margin-top:-2.2cqw;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f2d58b,#b48a33);color:#2a2008;font-family:var(--f-mono);font-weight:700;font-size:2cqw;display:grid;place-items:center;animation:fly 2.2s ease-in-out infinite;opacity:0}
+.coin:nth-child(2){animation-delay:.45s}.coin:nth-child(3){animation-delay:.9s}.coin:nth-child(4){animation-delay:1.35s}.coin:nth-child(5){animation-delay:1.8s}
+@keyframes fly{0%{left:0;opacity:0}12%{opacity:1}88%{opacity:1}100%{left:calc(100% - 4.4cqw);opacity:0}}
+.pay-total{grid-column:1/-1;text-align:center;margin-top:-4cqw}
+
+.ladder{height:100%;display:grid;align-content:center;gap:4cqw}
+.track{position:relative;height:1.2cqw;border-radius:2cqw;background:var(--line);margin-inline:3cqw}
+.track>i{position:absolute;inset:0 auto 0 0;width:0;border-radius:2cqw;background:linear-gradient(90deg,var(--gold-2),var(--gold));animation:fill 7s linear forwards}
+@keyframes fill{to{width:100%}}
+.cp{position:absolute;top:50%;width:4cqw;height:4cqw;margin:-2cqw 0 0 -2cqw;border-radius:50%;background:var(--bg);border:.4cqw solid var(--line);animation:cpon .4s forwards;animation-play-state:paused}
+.cp em{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;font-style:normal;font-family:var(--f-mono);font-size:clamp(9px,1.7cqw,14px)}
+.cp em.t{bottom:5cqw;color:var(--muted)}
+.cp em.b{top:5cqw;color:var(--ok);opacity:0;animation:fadein .4s forwards;animation-delay:inherit}
+@keyframes cpon{to{border-color:var(--ok);background:var(--ok)}}
+@keyframes fadein{to{opacity:1}}
+
+.formula{display:grid;gap:2.2cqw;align-content:center;height:100%;font-size:clamp(12px,2.7cqw,24px)}
+.formula div{display:flex;justify-content:space-between;gap:3cqw;border-bottom:1px solid var(--line);padding-bottom:1.6cqw;opacity:0;animation:pop .5s forwards}
+.formula div span{color:#cfccc2}
+.formula div b{font-family:var(--f-mono);color:var(--fg)}
+.formula div.res b{color:var(--gold)}
+.formula div.res{border:0}
+
+/* lessons */
+.lessons{margin-top:40px;display:grid;gap:14px}
+details.lesson{border:1px solid var(--line);border-radius:16px;background:var(--surface);overflow:hidden}
+details.lesson[open]{background:linear-gradient(180deg,var(--surface),var(--bg) 220px)}
+details.lesson>summary{list-style:none;display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:12px;align-items:center;padding:18px 18px;cursor:pointer}
+details.lesson>summary::-webkit-details-marker{display:none}
+.l-n{font-family:var(--f-mono);font-size:14px;color:var(--gold);border:1px solid var(--gold-line);border-radius:10px;height:40px;display:grid;place-items:center}
+.l-t{font-family:var(--f-display);font-size:17px;font-weight:600;line-height:1.3}
+.l-t small{display:block;font-family:var(--f-body);font-weight:400;font-size:14px;color:var(--muted);margin-top:3px}
+.l-state{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center}
+.l-state svg{width:14px;height:14px;stroke:#0c0d0f;stroke-width:3;fill:none;opacity:0}
+details.lesson.done .l-state{background:var(--ok);border-color:var(--ok)}
+details.lesson.done .l-state svg{opacity:1}
+.l-body{padding:4px 22px 24px;display:grid;gap:16px}
+.l-tools{display:flex;gap:10px;flex-wrap:wrap;padding-bottom:6px;border-bottom:1px solid var(--line);margin-bottom:4px;padding-top:4px}
+.ap{flex:1;display:flex;align-items:center;gap:12px;border:1px solid var(--gold-line);background:var(--gold-soft);border-radius:12px;padding:8px 12px 8px 8px;min-width:0}
+.ap-play{width:40px;height:40px;flex:none;border-radius:50%;border:0;background:var(--gold);display:grid;place-items:center}
+.ap-play svg{width:16px;height:16px;fill:#17140c}
+.ap-mid{flex:1;min-width:0;display:grid;gap:2px}
+.ap-mid b{font-size:13px;color:var(--gold);font-weight:600;white-space:nowrap}
+.ap-seek{width:100%;margin:0}
+.ap-time{font-size:12.5px;color:var(--muted);white-space:nowrap}
+.ap-rate{border:1px solid var(--gold-line);background:transparent;color:var(--gold);border-radius:8px;padding:4px 8px;font-size:13px;font-family:var(--f-mono)}
+.l-body h4{font-size:17px;margin-top:10px;color:var(--fg)}
+.l-body ul,.l-body ol{margin:0;padding-left:22px;display:grid;gap:8px}
+.l-body li::marker{color:var(--gold)}
+.l-body .reading{background:var(--gold-soft);box-shadow:-10px 0 0 var(--gold-soft),10px 0 0 var(--gold-soft);border-radius:4px}
+.callout{border-radius:12px;padding:16px 18px;display:grid;gap:6px}
+.callout .lab{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+.callout.simple{background:var(--gold-soft);border:1px solid var(--gold-line)}
+.callout.simple .lab{color:var(--gold)}
+.callout.warn{background:var(--bad-soft);border:1px solid rgba(229,119,95,.35)}
+.callout.warn .lab{color:var(--bad)}
+.callout.key{background:var(--ok-soft);border:1px solid rgba(124,199,154,.35)}
+.callout.key .lab{color:var(--ok)}
+.l-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px;margin-top:6px}
+.check{display:inline-flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:11px;padding:9px 14px;background:transparent;font-size:15px}
+.check i{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--muted);display:grid;place-items:center}
+.check[aria-pressed=true]{border-color:rgba(124,199,154,.5);color:var(--ok)}
+.check[aria-pressed=true] i{background:var(--ok);border-color:var(--ok)}
+.check[aria-pressed=true] i::after{content:"";width:5px;height:9px;border:solid #0c0d0f;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:15px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;background:var(--surface-2)}
+tr:last-child td{border-bottom:0}
+td:first-child{color:var(--muted)}
+
+/* inline flow (lesson 1.4) */
+.flow{display:grid;grid-template-columns:repeat(9,auto);align-items:center;gap:6px;padding:20px 16px;border:1px solid var(--line);border-radius:14px;background:var(--bg)}
+.f-node{display:grid;justify-items:center;gap:6px;text-align:center}
+.f-node .ic{width:52px;height:52px;border-radius:14px;background:var(--surface-2);border:1px solid var(--line);display:grid;place-items:center}
+.f-node .ic svg{width:24px;height:24px;stroke:var(--gold);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.f-node b{font-size:13px;font-weight:600;line-height:1.25}
+.f-pipe{height:2px;min-width:18px;background:var(--line);position:relative;overflow:hidden}
+.f-pipe::after{content:"";position:absolute;top:-2px;left:0;width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);animation:frun 1.6s linear infinite}
+.f-pipe.back::after{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+@keyframes frun{from{transform:translateX(-8px)}to{transform:translateX(60px)}}
+
+/* niches */
+.niches{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.niche{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:14px}
+.niche b{display:block;font-size:15.5px}
+.niche span{display:block;color:var(--muted);font-size:14px;line-height:1.45;margin-top:4px}
+
+/* widgets */
+.widget{border:1px solid var(--gold-line);border-radius:16px;background:var(--bg);padding:20px;display:grid;gap:16px}
+.w-head{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.w-head h4{margin:0;font-size:16px}
+.w-tag{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px 22px}
+.field{display:grid;gap:6px;min-width:0}
+.field>label,.field>.lbl{display:flex;justify-content:space-between;gap:10px;font-size:14.5px;color:var(--muted)}
+.field output,.field .val{font-family:var(--f-mono);color:var(--fg);font-weight:500}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg{flex-wrap:wrap}
+.seg button{flex:1 1 auto;min-width:64px;border:0;background:transparent;padding:8px 6px;font-size:14px;color:var(--muted)}
+.seg button[aria-pressed=true]{background:var(--gold-soft);color:var(--gold);font-weight:600}
+.results{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.results div{background:var(--surface);padding:14px}
+.results span{display:block;font-size:13px;color:var(--muted)}
+.results b{display:block;font-family:var(--f-mono);font-size:22px;margin-top:2px;font-variant-numeric:tabular-nums}
+.results .hl{background:linear-gradient(160deg,#211d12,var(--surface))}
+.results .hl b{color:var(--gold)}
+.w-note{font-size:14px;color:var(--muted);line-height:1.5}
+.w-note.warn{color:var(--bad)}
+
+.sim-track{position:relative;height:56px;margin:8px 26px 26px 14px}
+.sim-bar{position:absolute;left:0;right:0;top:22px;height:10px;border-radius:6px;background:var(--line);overflow:hidden}
+.sim-bar i{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,var(--gold-2),var(--gold))}
+.sim-mark{position:absolute;top:16px;width:22px;height:22px;margin-left:-11px;border-radius:50%;background:var(--bg);border:2px solid var(--line);transition:all .25s}
+.sim-mark.on{background:var(--ok);border-color:var(--ok);box-shadow:0 0 0 6px var(--ok-soft)}
+.sim-mark em{position:absolute;top:28px;left:50%;transform:translateX(-50%);font-style:normal;font-family:var(--f-mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.sim-mark.on em{color:var(--ok)}
+
+.case{border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--surface);display:grid;gap:12px}
+.case p{font-size:16px}
+.case .row button{border:1px solid var(--line);background:transparent;border-radius:10px;padding:8px 14px;font-size:14.5px}
+.case .verdict{font-size:15px;border-radius:10px;padding:12px 14px}
+.case .verdict.ok{background:var(--ok-soft);color:#cfe9d8}
+.case .verdict.no{background:var(--bad-soft);color:#f4d0c6}
+.case .verdict b{display:block;margin-bottom:2px}
+.score{font-family:var(--f-mono);color:var(--gold)}
+
+/* module end */
+.mod-end{margin-top:44px;display:grid;gap:18px}
+.mod-end>h3{font-size:24px}
+.panel{border:1px solid var(--line);border-radius:18px;background:var(--surface);padding:22px;display:grid;gap:18px}
+.panel h4{font-size:19px}
+.panel .sub{color:var(--muted);font-size:15px;margin-top:-10px}
+.task{display:grid;gap:8px;padding-top:16px;border-top:1px solid var(--line)}
+.task .tn{font-family:var(--f-mono);font-size:13px;color:var(--gold)}
+.task p{font-size:16px}
+.send{display:grid;gap:12px;padding-top:16px;border-top:1px solid var(--line)}
+.status{font-size:14px;color:var(--ok);min-height:1.4em}
+
+.q{display:grid;gap:10px;padding-top:16px;border-top:1px solid var(--line)}
+.q>b{font-size:16px;font-weight:600}
+.opt{text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:11px 14px;font-size:15px;line-height:1.4}
+.opt:hover{border-color:var(--gold-line)}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft)}
+.opt.no{border-color:var(--bad);background:var(--bad-soft)}
+.q .why{font-size:14.5px;color:var(--muted)}
+.test-res{border-radius:12px;padding:16px;background:var(--surface-2);display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.test-res .big{font-family:var(--f-mono);font-size:30px;font-weight:700}
+.test-res.pass{background:var(--ok-soft)}
+.test-res.pass .big{color:var(--ok)}
+
+.next{margin-top:44px;border:1px dashed var(--gold-line);border-radius:18px;padding:22px;display:grid;gap:8px}
+.next .eyebrow{font-size:12px}
+.next h3{font-size:20px}
+.next p{color:var(--muted)}
+
+.disclaimer{margin-top:84px;padding:26px;border-radius:18px;background:var(--surface);border:1px solid var(--line);display:grid;gap:12px}
+.disclaimer h2{font-size:22px}
+.disclaimer p{color:#cfccc2}
+footer.foot{margin-top:28px;color:var(--muted);font-size:13.5px}
+
+/* now playing */
+.np{position:fixed;left:0;right:0;bottom:0;z-index:70;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:rgba(20,21,25,.96);border-top:1px solid var(--gold-line);display:flex;gap:14px;align-items:center;transform:translateY(110%);transition:transform .3s}
+.np.on{transform:none}
+.np .eq{display:flex;gap:3px;align-items:flex-end;height:18px}
+.np .eq i{width:3px;background:var(--gold);border-radius:2px;animation:eq 1s ease-in-out infinite}
+.np .eq i:nth-child(2){animation-delay:.2s}.np .eq i:nth-child(3){animation-delay:.4s}
+@keyframes eq{0%,100%{height:4px}50%{height:18px}}
+.np span{flex:1;min-width:0;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* mobile nav */
+.drawer-bg{display:none}
+@media (max-width:980px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:0}
+  .side{position:fixed;top:0;bottom:0;left:0;width:min(330px,86vw);max-height:none;z-index:80;background:var(--surface);border-right:1px solid var(--line);padding:calc(24px + env(safe-area-inset-top,0px)) 16px 40px max(16px,env(safe-area-inset-left,0px));transform:translateX(-102%);transition:transform .3s}
+  .side.open{transform:none}
+  .drawer-bg{display:block;position:fixed;inset:0;z-index:75;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .3s}
+  .drawer-bg.open{opacity:1;pointer-events:auto}
+  .menu-btn{display:inline-block}
+  main{max-width:none}
+}
+@media (max-width:640px){
+  body{font-size:16.5px}
+  .prog-label{display:none}
+  .brand b{display:none}
+  .flow{grid-template-columns:1fr;justify-items:center;gap:4px}
+  .f-pipe{width:2px;height:22px;min-width:0}
+  .f-pipe::after{animation-name:frunv;left:-2px;top:0}
+  .voice-row{grid-template-columns:1fr;gap:6px}
+  details.lesson>summary{grid-template-columns:44px minmax(0,1fr) auto;padding:16px 14px}
+  .l-body{padding:4px 16px 20px}
+  .widget,.panel{padding:16px}
+  .program li{grid-template-columns:34px minmax(0,1fr)}
+  .program .tag{grid-column:2;justify-self:start}
+  .stage{aspect-ratio:auto}
+  .scene{position:relative;inset:auto;aspect-ratio:1/1;padding:12cqw 6cqw 5cqw}
+  .cap{position:relative;left:auto;right:auto;bottom:auto;font-size:14px;padding:0 5cqw 5cqw;min-height:5.6em;align-items:flex-start}
+  .cap span{background:none;padding:0}
+  .scene-title{font-size:11px}
+  .s-split,.s-grid{grid-template-columns:1fr;justify-items:center;text-align:center;gap:4cqw;align-content:center}
+  .phone{width:17cqw}
+  .dots{width:66cqw}
+  .s-num{font-size:12cqw}
+  .formula{font-size:15px}
+  .node .ic{width:16cqw;height:16cqw}
+}
+@keyframes frunv{from{transform:translateY(-8px)}to{transform:translateY(26px)}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+
+/* ---- scene templates ---- */
+.s-center{height:100%;display:grid;align-content:center;justify-items:center;text-align:center;gap:.4cqw}
+.s-grid>.s-center{height:auto;justify-items:start;text-align:left}
+.s-split>.s-center{height:auto;justify-items:start;text-align:left}
+.s-chat{height:100%;display:flex;flex-direction:column;justify-content:center;gap:1.6cqw;max-width:74cqw;margin:0 auto}
+.bub{max-width:80%;padding:1.6cqw 2.2cqw;border-radius:2.4cqw;font-size:clamp(11px,2.2cqw,18px);line-height:1.35;opacity:0;animation:pop .5s forwards}
+.bub.me{align-self:flex-end;background:var(--gold);color:#17140c;border-bottom-right-radius:.6cqw}
+.bub.them{align-self:flex-start;background:var(--surface-2);border:1px solid var(--line);border-bottom-left-radius:.6cqw}
+.s-bars{height:100%;display:grid;align-content:center;gap:2.4cqw}
+.sb{display:grid;grid-template-columns:26cqw 1fr 14cqw;gap:2cqw;align-items:center;font-size:clamp(11px,2.1cqw,17px)}
+.sb span{color:#cfccc2}
+.sb b{font-family:var(--f-mono);text-align:right}
+.sb-t{height:3cqw;background:var(--line);border-radius:1cqw;overflow:hidden}
+.sb-t i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold-2),var(--gold));animation:bar 1.2s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes bar{to{width:var(--w)}}
+.s-check{height:100%;display:grid;align-content:center;gap:2.2cqw;max-width:70cqw;margin:0 auto}
+.sc{display:flex;gap:2cqw;align-items:center;font-size:clamp(12px,2.5cqw,21px);opacity:0;animation:pop .45s forwards}
+.sc i{flex:none;width:3.6cqw;height:3.6cqw;border-radius:1cqw;border:.35cqw solid var(--ok);position:relative}
+.sc i::after{content:"";position:absolute;left:28%;top:10%;width:30%;height:55%;border:solid var(--ok);border-width:0 .45cqw .45cqw 0;transform:rotate(45deg)}
+.map a .mk{margin-left:auto;width:8px;height:8px;border-radius:50%;flex:none;align-self:center}
+.map a.passed .mk{background:var(--ok)}
+a.next{display:grid;text-decoration:none;color:var(--fg)}
+a.next:hover{border-color:var(--gold)}
+.cases{display:grid;gap:12px}
+.out{white-space:pre-wrap;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:15px;line-height:1.55}
+.chk-list{display:grid;gap:8px}
+.chk-list label{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface);cursor:pointer;font-size:15px;line-height:1.45}
+.chk-list input{accent-color:var(--gold);width:18px;height:18px;margin-top:2px;flex:none}
+.chk-list label:has(input:checked){border-color:rgba(124,199,154,.45)}
+.diag{display:grid;gap:10px}
+.diag div{border-radius:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);font-size:15px}
+.diag div b{display:block;color:var(--gold);margin-bottom:2px}
+.meter{height:8px;border-radius:5px;background:var(--line);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--gold);transition:width .4s}
+@media (max-width:640px){.sb{grid-template-columns:24cqw 1fr 16cqw}.s-chat{max-width:none}.bub{font-size:13.5px;padding:8px 11px}.sc{font-size:14px}}
+.results b{white-space:nowrap}
+.map>li>ol{display:none}
+.map>li.here>ol{display:grid}
+@media (max-width:640px){.results{grid-template-columns:1fr 1fr}.results div:last-child:nth-child(odd){grid-column:1/-1}.results b{font-size:19px}}
+.cta{border:1px solid var(--gold-line);border-radius:20px;padding:28px 24px;background:radial-gradient(120% 100% at 100% 0%,#211c10 0%,var(--surface) 60%)}
+.cta .lead{color:#cfccc2;margin-top:12px}
+.cta h2{margin-top:10px;font-size:clamp(24px,3.6vw,32px)}
+.cta-box{margin-top:22px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.program li.lk b{color:#cfccc2}
+.map a.locked{color:var(--muted)}
+.map a.locked .n{color:var(--muted)}
+a.cur{text-decoration:none;color:var(--fg)}
+a.cur:hover{border-color:var(--gold-line)}
+a.btn{text-decoration:none}
+</style>
+
+
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-in">
+    <button class="menu-btn" id="menuBtn" aria-controls="side" aria-expanded="false">Программа</button>
+    <a class="brand" href="#top"><span class="mark">GT</span><b>GТРАФФ</b></a>
+    <div class="prog">
+      <div class="prog-track" aria-hidden="true"><i id="progBar"></i></div>
+      <span class="prog-label" id="progLabel">Пройдено 0 из 7 уроков</span>
+    </div>
+  </div>
+</header>
+
+<div class="drawer-bg" id="drawerBg"></div>
+<div class="shell">
+  <aside class="side" id="side" aria-label="Программа курса">
+    <h5>Программа курса</h5>
+    <ul class="map" id="map"></ul>
+  </aside>
+
+  <main id="top">
+    <!-- ============ ВВОДНАЯ ============ -->
+    <section class="hero" id="m0">
+      <div class="eyebrow">GТрафф · Бесплатный урок</div>
+      <h1>Бесплатный урок: <em>как зарабатывать на&nbsp;УБТ с&nbsp;экспертами</em></h1>
+      <p class="lead">Первый модуль нашего курса целиком: как устроен арбитраж трафика, где здесь УБТ, сколько платят эксперты и как посчитать свой план. С видео-разбором, тренажёрами, домашкой и тестом.</p>
+      <div class="meta">
+        <span>7 уроков</span><span>Видео-разбор</span><span>3 тренажёра</span><span>Домашка с проверкой куратора</span><span>Тест</span>
+      </div>
+
+      <figure class="quote">
+        <blockquote>Вдохновение — для любителей. Остальные просто приходят и работают.</blockquote>
+        <figcaption><b>Чак Клоуз</b>, американский художник</figcaption>
+      </figure>
+    </section>
+
+    <section class="sec" id="about">
+      <h2>Об уроке</h2>
+      <div class="prose">
+        <p>Это первый модуль практического курса по условно-бесплатному трафику (УБТ). Вы научитесь делать контент, который набирает просмотры, и превращать эти просмотры в подписчиков для экспертов, которые за них платят.</p>
+        <p>Курс сделала наша команда GТрафф. Наша команда сама работает с аккаунтами в Threads, Instagram и YouTube и с Telegram-каналами, поэтому в курсе собрано то, что проверено на практике, включая ошибки: теневые баны, аккаунты, которые не взлетели, форматы, которые выгорели.</p>
+        <p>Цифры в уроках — это ориентиры из практики. Наша команда честно показывает, где они могут не сработать.</p>
+      </div>
+    </section>
+
+    <section class="sec" id="who">
+      <h2>Для кого этот курс</h2>
+      <div class="prose">
+        <ul>
+          <li>Для новичков без опыта, у которых есть телефон и 2–4 часа в день.</li>
+          <li>Для тех, кто уже выкладывает ролики, но не понимает, как превратить просмотры в деньги.</li>
+          <li>Для тех, кто хочет работать с экспертами и брать заказы на трафик.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="sec" id="how">
+      <h2>Как проходить курс</h2>
+      <p class="sub">Один модуль — один законченный шаг. Не перескакивайте: каждый следующий модуль опирается на предыдущий.</p>
+      <div class="steps">
+        <div class="step"><span class="k">01</span><b>Видео-разбор</b><p>Короткая анимация с субтитрами: суть модуля за 2 минуты.</p></div>
+        <div class="step"><span class="k">02</span><b>Уроки</b><p>Подробно и простым языком. Уроки с озвучкой можно слушать.</p></div>
+        <div class="step"><span class="k">03</span><b>Тренажёры</b><p>Калькуляторы и ситуации, где вы сами принимаете решение.</p></div>
+        <div class="step"><span class="k">04</span><b>Домашка и тест</b><p>В конце модуля. Домашку отправляете куратору, тест засчитывается от 6 из 8.</p></div>
+      </div>
+    </section>
+
+    <section class="sec" id="team">
+      <h2>Кураторы</h2>
+      <p class="sub">Проверяем домашки и отвечаем на вопросы по материалу в личных сообщениях.</p>
+      <div class="curators">
+        <a class="cur" href="https://t.me/marcelotrf" target="_blank" rel="noopener"><div class="ava">Э</div><div><b>Эдем</b><span>@marcelotrf · трафик, аккаунты, аналитика</span></div></a>
+        <a class="cur" href="https://t.me/A787AA8" target="_blank" rel="noopener"><div class="ava">А</div><div><b>Алина</b><span>@A787AA8 · трафик, монтаж, контент</span></div></a>
+      </div>
+    </section>
+
+    <section class="sec" id="program">
+      <h2>Программа полного курса</h2>
+      <ol class="program" id="programList"></ol>
+    </section>
+
+
+    <!-- ============ МОДУЛЬ 1 ============ -->
+    <section class="module" id="m1" data-desc="Модель работы, ниши, цены за подписчика, честный расчёт, защита от скама">
+      <div class="mod-head">
+        <div class="eyebrow">Модуль 1 из 9</div>
+        <h2>Как устроен арбитраж и&nbsp;где здесь УБТ</h2>
+        <p class="lead">Фундамент всего курса. Разбираемся, откуда берутся деньги, кто за что платит и сколько на этом реально можно заработать.</p>
+        <ul class="learn">
+          <li>Объясните арбитраж трафика своими словами</li>
+          <li>Поймёте, чем УБТ отличается от платной рекламы</li>
+          <li>Разберёте модель «контент → канал эксперта → оплата»</li>
+          <li>Узнаете ниши и цены за подписчика</li>
+          <li>Посчитаете свой первый реалистичный план</li>
+          <li>Научитесь не работать бесплатно на скамеров</li>
+        </ul>
+      </div>
+
+      <div class="video" data-video="1"></div>
+      <div class="lessons" id="lessons1">
+
+        <!-- 1.1 -->
+        <details class="lesson" id="l1-1" data-lesson="1.1" open>
+          <summary><span class="l-n">1.1</span><span class="l-t">Арбитраж трафика простыми словами<small>Откуда берутся деньги и кто участвует</small></span><span class="l-state"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span></summary>
+          <div class="l-body">
+            <div class="l-tools"></div>
+            <p>Арбитраж трафика — это заработок на внимании людей. Вы приводите аудиторию туда, где она нужна бизнесу, и получаете за это деньги. Разница между тем, что вы потратили на привлечение, и тем, что вам заплатили, — ваш доход.</p>
+            <p>Классический пример выглядит так. Банк платит 1 000 ₽ за каждую заявку на кредитную карту. Арбитражник покупает рекламу и платит площадке за клики. Если одна заявка обходится ему в 600 ₽, он зарабатывает 400 ₽ с каждой. Если в 1 200 ₽, он в минусе. Вся профессия держится на этой арифметике.</p>
+            <h4>Кто участвует</h4>
+            <ul>
+              <li><b>Рекламодатель</b> — тот, у кого есть продукт и кому нужны клиенты или подписчики.</li>
+              <li><b>Источник трафика</b> — место, где живут люди: Threads, Instagram, YouTube, TikTok.</li>
+              <li><b>Арбитражник</b> — вы. Соединяете людей из источника с рекламодателем.</li>
+              <li><b>Посредник</b> — иногда между вами стоит партнёрская сеть, которая считает результат и платит. В нашей модели её нет: вы работаете с экспертом напрямую.</li>
+            </ul>
+            <p>В этом курсе рекламодатель — эксперт. Это человек, который ведёт Telegram-канал и продаёт обучение, консультации или свои продукты. Ему нужны живые подписчики. Вы их приводите, он платит.</p>
+            <div class="callout simple"><span class="lab">Простыми словами</span><p>Вы как промоутер у входа в зал. Зовёте людей с улицы, и хозяин зала платит за каждого, кто зашёл. Улица — это лента Threads или Reels. Зал — Telegram-канал эксперта.</p></div>
+            <div class="callout key"><span class="lab">Запомните</span><p>Арбитраж — это не кнопка «бабло». Это навык: понимать, где сидят люди, чем их зацепить и сколько стоит их привести.</p></div>
+            <div class="l-foot"><span class="hint">Урок 1 из 7</span><button class="check" type="button" aria-pressed="false"><i></i>Урок пройден</button></div>
+          </div>
+        </details>
+
+        <!-- 1.2 -->
+        <details class="lesson" id="l1-2" data-lesson="1.2">
+          <summary><span class="l-n">1.2</span><span class="l-t">Не только казино<small>Какие бывают направления и почему наша команда выбрала экспертов</small></span><span class="l-state"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span></summary>
+          <div class="l-body">
+            <div class="l-tools"></div>
+            <p>Когда люди слышат «арбитраж трафика», первое, что приходит в голову, — казино и ставки. Гемблинг и беттинг действительно большая часть рынка, там крутятся огромные бюджеты. Но трафик нужен всем, кто продаёт что-то в интернете.</p>
+            <ul>
+              <li>Интернет-магазинам и товарке — покупатели.</li>
+              <li>Онлайн-школам — ученики.</li>
+              <li>Приложениям и сервисам — установки и регистрации.</li>
+              <li>Экспертам — подписчики в канал, из которых потом получаются клиенты.</li>
+            </ul>
+            <h4>Почему эксперты</h4>
+            <p>Экспертов, которые ведут Telegram-канал и продают свои знания, тысячи, и каждому нужен постоянный приток людей. Для новичка это самая понятная модель:</p>
+            <ul>
+              <li><b>Понятный результат.</b> Вы приводите подписчика, и это видно по ссылке.</li>
+              <li><b>Быстрые деньги.</b> Эксперты часто платят частями, иногда каждый день.</li>
+              <li><b>Не нужны партнёрки, трекеры и рекламный бюджет.</b> Хватит телефона и аккаунтов.</li>
+              <li><b>Прямой контакт.</b> Вы договариваетесь с живым человеком и можете работать с ним месяцами.</li>
+            </ul>
+            <div class="callout warn"><span class="lab">Про казино честно</span><p>Гемблинг — отдельная история со своими рисками. В России реклама азартных игр без лицензии запрещена, а площадки блокируют такие аккаунты в первую очередь. В этом курсе фокус на экспертах.</p></div>
+            <div class="l-foot"><span class="hint">Урок 2 из 7</span><button class="check" type="button" aria-pressed="false"><i></i>Урок пройден</button></div>
+          </div>
+        </details>
+
+        <!-- 1.3 -->
+        <details class="lesson" id="l1-3" data-lesson="1.3">
+          <summary><span class="l-n">1.3</span><span class="l-t">Где здесь УБТ<small>Платный трафик против условно-бесплатного</small></span><span class="l-state"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span></summary>
+          <div class="l-body">
+            <div class="l-tools"></div>
+            <p>Трафик бывает платный и условно-бесплатный. Платный — это когда вы покупаете показы рекламы: таргет, посевы в каналах, контекст. Результат быстрый, но нужен бюджет, и каждый тест стоит денег.</p>
+            <p>УБТ, условно-бесплатный трафик, устроен иначе. Вы не платите площадке за показ. Вы делаете контент: ролики, посты, ветки. Алгоритм сам показывает его людям. Если контент цепляет, просмотры приходят бесплатно.</p>
+            <p>«Условно» — потому что бесплатно не бывает ничего. Вы платите временем, телефонами, иногда аккаунтами, а когда растёте — монтажёрами и сим-картами. Деньги на рекламу заменяются руками и головой.</p>
+            <div class="tablewrap">
+              <table>
+                <thead><tr><th></th><th>Платный трафик</th><th>УБТ</th></tr></thead>
+                <tbody>
+                  <tr><td>Для старта</td><td>Бюджет от десятков тысяч рублей</td><td>Телефон, аккаунты и время</td></tr>
+                  <tr><td>Первые данные</td><td>Через несколько часов</td><td>Через несколько дней или недель</td></tr>
+                  <tr><td>Главный ресурс</td><td>Деньги</td><td>Контент и регулярность</td></tr>
+                  <tr><td>Чем рискуете</td><td>Слить бюджет на тестах</td><td>Временем и аккаунтами</td></tr>
+                  <tr><td>Как растёт</td><td>Увеличиваете бюджет</td><td>Больше аккаунтов и роликов</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <h4>Где работает УБТ</h4>
+            <p>Threads — текстовые ветки, которые могут быстро залететь. Instagram Reels, YouTube Shorts и TikTok — короткие вертикальные видео. У каждой площадки свой характер и свои правила, подробно разберём их в модуле 3.</p>
+            <div class="callout warn"><span class="lab">Ошибка новичка</span><p>Думать, что бесплатный значит лёгкий. Один ролик ничего не решает. Решает поток роликов каждый день, неделями.</p></div>
+            <div class="l-foot"><span class="hint">Урок 3 из 7</span><button class="check" type="button" aria-pressed="false"><i></i>Урок пройден</button></div>
+          </div>
+        </details>
+
+        <!-- 1.4 -->
+        <details class="lesson" id="l1-4" data-lesson="1.4">
+          <summary><span class="l-n">1.4</span><span class="l-t">Модель работы: контент → эксперт<small>Как человек из ленты становится вашими деньгами</small></span><span class="l-state"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span></summary>
+          <div class="l-body">
+            <div class="l-tools"></div>
+            <div class="flow" aria-label="Схема: ролик, профиль, канал эксперта, статистика, оплата">
+              <div class="f-node"><div class="ic"><svg viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M10.5 9.5v5l4-2.5z"/></svg></div><b>Ролик<br>или ветка</b></div>
+              <div class="f-pipe"></div>
+              <div class="f-node"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5"/></svg></div><b>Профиль<br>и ссылка</b></div>
+              <div class="f-pipe"></div>
+              <div class="f-node"><div class="ic"><svg viewBox="0 0 24 24"><path d="M21 4L3 11l6 2.2L19 7l-7.5 7.5L17.5 20z"/></svg></div><b>Канал<br>эксперта</b></div>
+              <div class="f-pipe"></div>
+              <div class="f-node"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div><b>Статистика<br>по ссылке</b></div>
+              <div class="f-pipe back"></div>
+              <div class="f-node"><div class="ic"><svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="13" rx="2.5"/><path d="M2.5 10h19M7 15h3"/></svg></div><b>Оплата<br>вам</b></div>
+            </div>
+            <h4>Цепочка по шагам</h4>
+            <ol>
+              <li><b>Находите эксперта</b>, которому нужны подписчики, и договариваетесь о цене за человека.</li>
+              <li><b>Получаете права администратора</b> на создание пригласительных ссылок. Так у вас появляется своя ссылка, и все, кто пришёл по ней, считаются вашими.</li>
+              <li><b>Делаете контент</b> в нише эксперта и ставите ссылку в профиль или в ветку.</li>
+              <li><b>Люди смотрят, переходят и подписываются.</b></li>
+              <li><b>Смотрите статистику</b> по своей ссылке: сколько вступило и сколько вышло. Удобно считать через бота @LinkStatBot.</li>
+              <li><b>Эксперт платит</b> за приведённых людей так, как вы договорились.</li>
+            </ol>
+            <p>Важный момент: вы не рекламируете эксперта в лоб. Вы делаете интересный контент на его тему, про крипту, деньги или психологию, и человек сам идёт за продолжением. Чем точнее ваш контент совпадает с каналом эксперта, тем меньше отписок и тем дольше с вами работают.</p>
+            <div class="callout simple"><span class="lab">Простыми словами</span><p>Ролик — это витрина, профиль — дверь, канал эксперта — магазин. Вы отвечаете за витрину и дверь. Что происходит в магазине, решает эксперт.</p></div>
+            <div class="l-foot"><span class="hint">Урок 4 из 7</span><button class="check" type="button" aria-pressed="false"><i></i>Урок пройден</button></div>
+          </div>
+        </details>
+
+        <!-- 1.5 -->
+        <details class="lesson" id="l1-5" data-lesson="1.5">
+          <summary><span class="l-n">1.5</span><span class="l-t">Ниши и как платят<small>Пять ниш, цена подписчика, отписки и лесенка оплаты</small></span><span class="l-state"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span></summary>
+          <div class="l-body">
+            <div class="l-tools"></div>
+            <p>Экспертов много, но для старта наша команда выделяет пять ниш, в которых есть спрос на подписчиков и понятный контент.</p>
+            <div class="niches">
+              <div class="niche"><b>Крипта</b><span>Новости, обучение, разборы монет. Аудитория молодая и активная.</span></div>
+              <div class="niche"><b>Финансы и заработок</b><span>Инвестиции, подработки, личные деньги. Очень широкий спрос.</span></div>
+              <div class="niche"><b>Психология</b><span>Отношения, самооценка, тревога. Много экспертов, лояльная аудитория.</span></div>
+              <div class="niche"><b>Арбитраж и трафик</b><span>Обучение и кейсы. Вы сами в теме, поэтому контент даётся легче.</span></div>
+              <div class="niche"><b>Товарка</b><span>Маркетплейсы, поставщики, свой магазин. Практичная аудитория.</span></div>
+            </div>
+            <h4>Сколько платят за подписчика</h4>
+            <p>Ориентир — 80–150 ₽ за одного подписчика. Цена зависит от ниши, качества аудитории и того, сколько людей вы приводите. Например, психолог платит 100 ₽ за подписчика. Привели 50 человек за день — получили 5 000 ₽.</p>
+            <h4>Отписки</h4>
+            <p>Часть людей подпишется и уйдёт. В среднем это 20–25%, и это нормально. Заранее договоритесь с экспертом, как считать: платит ли он за всех вступивших или только за тех, кто остался, например, через сутки.</p>
+            <h4>Лесенка оплаты</h4>
+            <p>Эксперт платит не в конце месяца, а частями: каждые 20, 30 или 40 человек, или раз в день. Как договоритесь. Это защищает обоих. Вы не работаете неделю бесплатно, а эксперт видит качество людей небольшими партиями.</p>
+
+            <div class="widget" id="ladderWidget">
+              <div class="w-head"><span class="w-tag">Тренажёр</span><h4>Лесенка оплаты</h4></div>
+              <div class="fields">
+                <div class="field"><span class="lbl">Шаг оплаты</span>
+                  <div class="seg" id="ladStep"><button type="button" data-v="20" aria-pressed="true">20 чел.</button><button type="button" data-v="30" aria-pressed="false">30 чел.</button><button type="button" data-v="40" aria-pressed="false">40 чел.</button><button type="button" data-v="day" aria-pressed="false">Раз в день</button></div>
+                </div>
+                <div class="field"><label for="ladPpl">Приводите за день <output id="ladPplO" class="num">60 чел.</output></label><input id="ladPpl" type="range" min="10" max="150" step="5" value="60"></div>
+                <div class="field"><label for="ladPrice">Цена подписчика <output id="ladPriceO" class="num">100 ₽</output></label><input id="ladPrice" type="range" min="80" max="150" step="5" value="100"></div>
+              </div>
+              <div class="sim-track" id="ladTrack"><div class="sim-bar"><i id="ladFill"></i></div></div>
+              <div class="results">
+                <div><span>Выплат за день</span><b id="ladPays">3</b></div>
+                <div class="hl"><span>Получено за день</span><b id="ladSum">6 000 ₽</b></div>
+                <div><span>Больше всего под риском</span><b id="ladRisk">2 000 ₽</b></div>
+              </div>
+              <div class="row"><button class="btn" type="button" id="ladRun"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Проиграть день</button></div>
+              <p class="w-note" id="ladNote">Если эксперт пропадёт, вы потеряете не больше одного шага.</p>
+            </div>
+
+            <div class="callout key"><span class="lab">Запомните</span><p>Чем меньше шаг оплаты, тем меньше вы рискуете. На старте с новым экспертом берите маленький шаг, даже если он предлагает «рассчитаться потом за всё».</p></div>
+            <div class="l-foot"><span class="hint">Урок 5 из 7</span><button class="check" type="button" aria-pressed="false"><i></i>Урок пройден</button></div>
+          </div>
+        </details>
+
+        <!-- 1.6 -->
+        <details class="lesson" id="l1-6" data-lesson="1.6">
+          <summary><span class="l-n">1.6</span><span class="l-t">Сколько это денег<small>Честный расчёт и калькулятор</small></span><span class="l-state"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span></summary>
+          <div class="l-body">
+            <div class="l-tools"></div>
+            <p>Доход в УБТ считается от просмотров. Ориентиры из практики такие: без лица в кадре нужно около 250 просмотров на одну заявку в канал, с лицом — 80–150. Лицо вызывает доверие, и люди охотнее идут дальше.</p>
+            <h4>Пример расчёта</h4>
+            <p>10 роликов в день, в среднем по 2 500 просмотров, — это 25 000 просмотров. Без лица получается около 100 заявок. Минус 20% отписок — остаётся 80 человек. По 100 ₽ за подписчика это 8 000 ₽ в день.</p>
+            <p>Звучит хорошо, но есть оговорки. Средние просмотры — главная переменная. Ролики могут набирать и 300, и 30 000. Аккаунты ловят теневой бан. Первые недели часто уходят на поиск формата, и денег в них может не быть вообще. Поэтому считайте осторожно, а не мечтательно.</p>
+
+            <div class="widget" id="calcWidget">
+              <div class="w-head"><span class="w-tag">Калькулятор</span><h4>Мой план на месяц</h4></div>
+              <div class="fields">
+                <div class="field"><label for="cPosts">Роликов в день <output id="cPostsO" class="num">10</output></label><input id="cPosts" type="range" min="1" max="30" step="1" value="10"></div>
+                <div class="field"><label for="cViews">Средние просмотры ролика <output id="cViewsO" class="num">2 500</output></label><input id="cViews" type="range" min="100" max="20000" step="100" value="2500"></div>
+                <div class="field"><span class="lbl">Формат</span>
+                  <div class="seg" id="cFace"><button type="button" data-v="250" aria-pressed="true">Без лица</button><button type="button" data-v="115" aria-pressed="false">С лицом</button></div>
+                </div>
+                <div class="field"><label for="cPrice">Цена подписчика <output id="cPriceO" class="num">100 ₽</output></label><input id="cPrice" type="range" min="80" max="150" step="5" value="100"></div>
+                <div class="field"><label for="cChurn">Отписки <output id="cChurnO" class="num">20%</output></label><input id="cChurn" type="range" min="0" max="40" step="1" value="20"></div>
+                <div class="field"><span class="lbl">Эксперт платит</span>
+                  <div class="seg" id="cMode"><button type="button" data-v="stay" aria-pressed="true">За оставшихся</button><button type="button" data-v="all" aria-pressed="false">За всех</button></div>
+                </div>
+              </div>
+              <div class="results">
+                <div><span>Просмотров в день</span><b id="cR1">25 000</b></div>
+                <div><span>Заявок в день</span><b id="cR2">100</b></div>
+                <div><span>Остаются</span><b id="cR3">80</b></div>
+                <div><span>Доход в день</span><b id="cR4">8 000 ₽</b></div>
+                <div class="hl"><span>Доход за 30 дней</span><b id="cR5">240 000 ₽</b></div>
+              </div>
+              <p class="w-note" id="cNote"></p>
+              <p class="w-note">Это расчёт по средним цифрам, а не обещание. Подставляйте свои реальные просмотры, когда они появятся.</p>
+            </div>
+
+            <div class="callout warn"><span class="lab">Ошибка новичка</span><p>Посчитать по лучшему ролику. Один ролик на 40 000 просмотров не делает средние 40 000. Считайте по среднему за неделю.</p></div>
+            <div class="l-foot"><span class="hint">Урок 6 из 7</span><button class="check" type="button" aria-pressed="false"><i></i>Урок пройден</button></div>
+          </div>
+        </details>
+
+        <!-- 1.7 -->
+        <details class="lesson" id="l1-7" data-lesson="1.7">
+          <summary><span class="l-n">1.7</span><span class="l-t">Как не попасть на скам<small>Защита от недобросовестных экспертов и голова новичка</small></span><span class="l-state"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span></summary>
+          <div class="l-body">
+            <div class="l-tools"></div>
+            <p>Большинство экспертов платят честно, им нужен поток людей, и они заинтересованы в долгой работе. Но новички чаще всего теряют деньги не на алгоритмах, а на договорённостях.</p>
+            <h4>Как выглядит скам со стороны эксперта</h4>
+            <ul>
+              <li>Не платит после первой партии и пропадает.</li>
+              <li>Говорит, что ваши подписчики «боты» или «не та аудитория», хотя статистика нормальная.</li>
+              <li>Просит привести 300–500 человек «на тест» бесплатно.</li>
+              <li>Меняет условия задним числом: была одна цена, стала другая.</li>
+            </ul>
+            <h4>Как защититься</h4>
+            <ul>
+              <li><b>Лесенка оплаты.</b> Маленький шаг: каждые 20–40 человек или раз в день.</li>
+              <li><b>Договорённости письменно.</b> В переписке фиксируете цену, шаг оплаты и то, как считаются отписки.</li>
+              <li><b>Своя ссылка и своя статистика.</b> Не верьте на слово, смотрите цифры.</li>
+              <li><b>Проверка эксперта.</b> Возраст канала, живые комментарии, отзывы, есть ли у него реальный продукт.</li>
+              <li><b>Никаких предоплат с вашей стороны.</b> Платят вам, а не вы. Кто просит взнос «за доступ к экспертам», тот на вас и зарабатывает.</li>
+            </ul>
+
+            <div class="widget" data-cases="scam">
+              <div class="w-head"><span class="w-tag">Тренажёр</span><h4>Нормально или красный флаг?</h4><span class="score">0 / 5</span></div>
+              <div class="cases"></div>
+            </div>
+
+            <h4>Голова новичка</h4>
+            <p>Первые результаты приходят не сразу, и это главное, к чему нужно быть готовым. Аккаунты будут умирать, ролики будут собирать по 200 просмотров, формат, который работал вчера, перестанет работать завтра. Это рабочие ситуации, а не повод бросить.</p>
+            <ul>
+              <li>Сравнивайте себя с собой неделю назад, а не с чужими скринами.</li>
+              <li>Работайте по графику, а не по настроению. Именно про это цитата в начале курса.</li>
+              <li>Записывайте цифры каждый день. Через месяц они покажут больше, чем любые ощущения.</li>
+            </ul>
+            <div class="l-foot"><span class="hint">Урок 7 из 7</span><button class="check" type="button" aria-pressed="false"><i></i>Урок пройден</button></div>
+          </div>
+        </details>
+      </div>
+
+      <div class="mod-end">
+        <h3>Итог модуля 1</h3>
+        <div class="panel hw" data-m="1">
+          <h4>Домашнее задание</h4>
+          <div class="task"><span class="tn">Задание 1</span><p>Своими словами опишите цепочку: где вы берёте людей, куда их ведёте, кто и за что вам платит. 3–5 предложений.</p><textarea data-q="Опишите цепочку своими словами"></textarea></div>
+          <div class="task"><span class="tn">Задание 2</span><p>Выберите одну нишу из пяти и объясните, почему она вам ближе: интерес, понимание аудитории, идеи для контента.</p><textarea data-q="Выбранная ниша и почему"></textarea></div>
+          <div class="task"><span class="tn">Задание 3</span><p>Найдите 3 Telegram-канала экспертов в выбранной нише. Для каждого запишите: ссылку, число подписчиков, средние просмотры поста и что продаёт эксперт.</p><textarea data-q="3 канала экспертов"></textarea></div>
+          <div class="task"><span class="tn">Задание 4</span><p>Посчитайте в калькуляторе (урок 1.6) свой реалистичный план: сколько роликов в день вы реально сможете делать и какой доход это даёт при осторожных просмотрах. Запишите цифры.</p><textarea data-q="Мой план по калькулятору"></textarea></div>
+        </div>
+        <div class="panel test" data-m="1"></div>
+      </div>
+    </section>
+
+    <section class="sec cta" id="full">
+      <div class="eyebrow">Полный курс GТрафф</div>
+      <h2>Это был первый модуль из девяти</h2>
+      <p class="lead">Дальше — всё, что нужно, чтобы перейти от понимания к первым деньгам: поиск экспертов, площадки и аккаунты, контент и монтаж, воронка в Telegram, работа с экспертами, контент-ферма, закон и налоги.</p>
+      <ul class="learn">
+        <li>Ещё 8 модулей и 45 уроков</li><li>Видео-разбор в каждом модуле</li><li>Генератор хуков, проверка экспертов, планировщик фермы</li><li>Домашки с проверкой куратора нашей команды</li><li>Тест после каждого модуля</li><li>Итоговый проект и разбор ваших цифр</li>
+      </ul>
+      <ol class="program"><li class="lk"><span class="n">02</span><div><b>Ниши и эксперты: как найти и договориться</b><small>Выбор ниши, поиск и проверка экспертов, первое сообщение, условия и цена</small></div><span class="tag wait">Закрыт</span></li><li class="lk"><span class="n">03</span><div><b>Площадки и аккаунты</b><small>Threads, Reels, Shorts, TikTok: профиль, прогрев, теневой бан, безопасность</small></div><span class="tag wait">Закрыт</span></li><li class="lk"><span class="n">04</span><div><b>Контент: ветки, разговорные видео, нарезки</b><small>Темы, хуки, форматы, сценарии, призыв к действию, контент-план</small></div><span class="tag wait">Закрыт</span></li><li class="lk"><span class="n">05</span><div><b>Съёмка, монтаж и нейросети</b><small>Съёмка с телефона, монтаж в CapCut, нарезки, уникализация, нейросети</small></div><span class="tag wait">Закрыт</span></li><li class="lk"><span class="n">06</span><div><b>Telegram-воронка и аналитика</b><small>Путь человека, пригласительные ссылки, прокладка и лид-магнит, учёт и диагностика по цифрам</small></div><span class="tag wait">Закрыт</span></li><li class="lk"><span class="n">07</span><div><b>Работа с экспертом и масштаб</b><small>Первые недели, отчёты, рост цены, несколько экспертов, команда, конфликты</small></div><span class="tag wait">Закрыт</span></li><li class="lk"><span class="n">08</span><div><b>Контент-ферма и система</b><small>Несколько аккаунтов, роли аккаунтов, производство, рабочий график, недельный разбор</small></div><span class="tag wait">Закрыт</span></li><li class="lk"><span class="n">09</span><div><b>Закон, деньги и итоговый проект</b><small>Маркировка рекламы, запреты площадок, что нельзя обещать, налоги, итоговый проект</small></div><span class="tag wait">Закрыт</span></li></ol>
+      <div class="cta-box"><a class="btn solid" href="https://t.me/gtraffinfo" target="_blank" rel="noopener">Получить полный курс в Telegram</a></div>
+    </section>
+    <section class="disclaimer" id="important">
+      <h2>Важно</h2>
+      <p>Курс не обещает заработок. Наша команда даёт знания, инструменты и разборы, а результат зависит от вас: сколько времени вы вкладываете, насколько регулярно делаете контент и соблюдаете ли правила площадок.</p>
+      <p>Цифры в уроках — ориентиры из практики, а не гарантия. Площадки меняют алгоритмы и правила, аккаунты могут блокироваться, а эксперты — менять условия.</p>
+      <p>Соблюдайте законы своей страны и правила платформ. Не используйте обман, фейковые отзывы и обещания гарантированного дохода.</p>
+    </section>
+    <footer class="foot">GТрафф · Курс по УБТ на экспертов</footer>
+  </main>
+</div>
+
+<div class="np" id="np" role="status"><div class="eq" aria-hidden="true"><i></i><i></i><i></i></div><span id="npText">Озвучка</span><button class="btn ghost" type="button" id="npStop">Остановить</button></div>
+
+<script>window.GT_LOCKED=[[2, "Ниши и эксперты: как найти и договориться", "Выбор ниши, поиск и проверка экспертов, первое сообщение, условия и цена"], [3, "Площадки и аккаунты", "Threads, Reels, Shorts, TikTok: профиль, прогрев, теневой бан, безопасность"], [4, "Контент: ветки, разговорные видео, нарезки", "Темы, хуки, форматы, сценарии, призыв к действию, контент-план"], [5, "Съёмка, монтаж и нейросети", "Съёмка с телефона, монтаж в CapCut, нарезки, уникализация, нейросети"], [6, "Telegram-воронка и аналитика", "Путь человека, пригласительные ссылки, прокладка и лид-магнит, учёт и диагностика по цифрам"], [7, "Работа с экспертом и масштаб", "Первые недели, отчёты, рост цены, несколько экспертов, команда, конфликты"], [8, "Контент-ферма и система", "Несколько аккаунтов, роли аккаунтов, производство, рабочий график, недельный разбор"], [9, "Закон, деньги и итоговый проект", "Маркировка рекламы, запреты площадок, что нельзя обещать, налоги, итоговый проект"]];</script>
+<script>
+(function(){
+"use strict";
+var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var fmt=function(n){return Math.round(n).toLocaleString("ru-RU")};
+var rub=function(n){return fmt(n)+" ₽"};
+var esc=function(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;")};
+
+/* ---------- storage ---------- */
+var KEY="gtraff-course-v1", S={};
+try{S=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){S={}}
+S.done=S.done||{}; S.hw=S.hw||{}; S.test=S.test||{}; S.w=S.w||{};
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+/* ---------- кураторы: впишите ники Telegram без @ ---------- */
+var CURATORS=[["Эдем","marcelotrf"],["Алина","A787AA8"]]; /* кураторы: имя и ник в Telegram без @ */
+
+/* ---------- записанная озвучка: урок → файл; "модуль-сцена" (сцены с 0) → файл ---------- */
+var AUDIO={"1.1":"1-1.mp3","1.2":"1-2.mp3","1.3":"1-3.mp3","1.4":"1-4.mp3","1.5":"1-5.mp3","1.6":"1-6.mp3","1.7":"1-7.mp3"};
+var VAUDIO={"1-0":"v1-1.mp3","1-1":"v1-2.mp3","1-2":"v1-3.mp3","1-3":"v1-4.mp3","1-4":"v1-5.mp3","1-5":"v1-6.mp3","1-6":"v1-7.mp3"};
+
+var ICON_PLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',
+    ICON_STOP='<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg>',
+    ICON_PAUSE='<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
+
+/* ---------- программа и карта ---------- */
+var MODS=$$("section.module").map(function(sec){
+  var n=+sec.id.slice(1);
+  return {n:n,el:sec,t:$("h2",sec).textContent.replace(/\s+/g," ").trim(),d:sec.dataset.desc||"",
+    lessons:$$("details.lesson",sec).map(function(d){return [d.dataset.lesson,$(".l-t",d).firstChild.textContent.trim()]})};
+});
+$("#programList").innerHTML=MODS.map(function(m){return '<li><span class="n">'+(m.n<10?"0"+m.n:m.n)+'</span><div><a href="#m'+m.n+'"><b>'+esc(m.t)+'</b></a><small>'+esc(m.d)+'</small></div><span class="tag open" data-mstate="'+m.n+'">'+m.lessons.length+' уроков</span></li>'}).join("")+(window.GT_LOCKED||[]).map(function(m){return '<li class="lk"><span class="n">'+(m[0]<10?"0"+m[0]:m[0])+'</span><div><a href="#full"><b>'+esc(m[1])+'</b></a><small>'+esc(m[2])+'</small></div><span class="tag wait">В полном курсе</span></li>'}).join("");
+$("#map").innerHTML='<li><a href="#m0"><span class="n">0</span>Вводная</a></li>'+MODS.map(function(m){
+  return '<li><a href="#m'+m.n+'" data-mod="'+m.n+'"><span class="n">'+m.n+'</span>'+esc(m.t)+'<span class="mk"></span></a><ol>'+m.lessons.map(function(l){return '<li><a href="#l'+l[0].replace(".","-")+'" data-l="'+l[0]+'"><span class="dot"></span>'+l[0]+' '+esc(l[1])+'</a></li>'}).join("")+'</ol></li>';
+}).join("")+(window.GT_LOCKED||[]).map(function(m){return '<li><a href="#full" class="locked"><span class="n">'+m[0]+'</span>'+esc(m[1])+'<span class="soon">закрыт</span></a></li>'}).join("");
+
+/* mobile drawer */
+var side=$("#side"),bg=$("#drawerBg"),mb=$("#menuBtn");
+function drawer(o){side.classList.toggle("open",o);bg.classList.toggle("open",o);mb.setAttribute("aria-expanded",o)}
+mb.onclick=function(){drawer(!side.classList.contains("open"))};
+bg.onclick=function(){drawer(false)};
+function openLessonFromHash(h){var m=/^#l(\d+-\d+)$/.exec(h||"");if(m){var d=document.getElementById("l"+m[1]);if(d)d.open=true}}
+side.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;openLessonFromHash(a.getAttribute("href"));drawer(false)});
+openLessonFromHash(location.hash);
+function setCur(n){$$("#map>li").forEach(function(li){var a=$("a[data-mod]",li);li.classList.toggle("here",!!a&&a.dataset.mod===String(n))})}
+if("IntersectionObserver" in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)setCur(e.target.id.slice(1))})},{rootMargin:"-45% 0px -50% 0px"});$$("section.module").forEach(function(s){io.observe(s)})}
+setCur(1);window.addEventListener("hashchange",function(){openLessonFromHash(location.hash)});
+
+/* ---------- прогресс ---------- */
+var LESSONS=$$("details.lesson");
+function testPassed(m){var T=TESTS[m];if(!T)return false;var a=S.test["m"+m]||{},n=0,c=0;for(var k in a){c++;if(a[k]===T[k][2])n++}return c===T.length&&n>=Math.ceil(T.length*0.75)}
+function renderProgress(){
+  var n=0;
+  LESSONS.forEach(function(d){var id=d.dataset.lesson,on=!!S.done[id];if(on)n++;d.classList.toggle("done",on);var b=$(".check",d);if(b){b.setAttribute("aria-pressed",on);b.lastChild.textContent=on?"Пройден":"Урок пройден"}var a=$('#map a[data-l="'+id+'"]');if(a)a.classList.toggle("done",on)});
+  $("#progBar").style.width=(n/LESSONS.length*100)+"%";
+  $("#progLabel").textContent="Пройдено "+n+" из "+LESSONS.length+" уроков";
+  MODS.forEach(function(m){var ok=testPassed(m.n);var a=$('#map a[data-mod="'+m.n+'"]');if(a)a.classList.toggle("passed",ok);var t=$('[data-mstate="'+m.n+'"]');if(t){t.textContent=ok?"Пройден":m.lessons.length+" уроков";t.className="tag "+(ok?"open":"wait")}});
+}
+LESSONS.forEach(function(d){
+  var b=$(".check",d);if(!b)return;
+  b.addEventListener("click",function(){var id=d.dataset.lesson;S.done[id]=!S.done[id];save();renderProgress();
+    if(S.done[id]){var sec=d.closest("section"),list=$$("details.lesson",sec),i=list.indexOf(d),nx=list[i+1];if(nx){d.open=false;nx.open=true;setTimeout(function(){nx.scrollIntoView({behavior:"smooth",block:"start"})},60)}}});
+});
+
+/* ---------- TTS ---------- */
+function norm(t){
+  return t.replace(/GТрафф|GTraff/gi,"Джи Трафф").replace(/@LinkStatBot/g,"бот Линк Стат Бот").replace(/\bThreads\b/g,"Тредс").replace(/\bReels\b/g,"Рилс").replace(/\bShorts\b/g,"Шортс").replace(/\bTikTok\b/g,"Тик Ток").replace(/\bInstagram\b/g,"Инстаграм").replace(/\bYouTube\b/g,"Ютуб").replace(/\bTelegram\b/g,"Телеграм").replace(/\bCapCut\b/g,"Кап Кат").replace(/\bTGStat\b/g,"Ти Джи Стат").replace(/\bER\b/g,"и-ар").replace(/\bCTA\b/g,"призыв к действию").replace(/\bAI\b|\bИИ\b/g,"ИИ")
+   .replace(/УБТ/g,"У Бэ Тэ").replace(/ТГК/g,"тэ гэ ка").replace(/НПД/g,"эн пэ дэ").replace(/ЕРИР/g,"ерир").replace(/ОРД/g,"о эр дэ")
+   .replace(/(\d)\s(\d{3})/g,"$1$2").replace(/(\d+)[–-](\d+)\s?%/g,"от $1 до $2 процентов").replace(/(\d+)[–-](\d+)/g,"от $1 до $2").replace(/(\d)\s?%/g,"$1 процентов").replace(/₽/g,"рублей").replace(/→/g,", ").replace(/«|»/g,"").replace(/×/g," на ").replace(/÷/g," делить на ");
+}
+/* голос устройства (Милена и т. п.) отключён: звучат только записанные файлы */
+var TTS={ok:false,voices:[],voice:null,rate:+S.rate||1,gen:0,
+  score:function(v){var n=(v.name+" "+v.voiceURI).toLowerCase(),s=0;if(/milena|милена|yuri|юрий/.test(n))s+=4;if(/enhanced|premium|улучш|neural|natural|online/.test(n))s+=5;if(/google|yandex|microsoft/.test(n))s+=2;if(v.localService)s+=1;return s},
+  load:function(){if(!TTS.ok)return;var all=speechSynthesis.getVoices().filter(function(v){return /^ru/i.test(v.lang)});if(!all.length)return;TTS.voices=all.sort(function(a,b){return TTS.score(b)-TTS.score(a)});TTS.voice=TTS.voices.filter(function(v){return v.voiceURI===S.voice})[0]||TTS.voices[0];renderVoices()},
+  split:function(t){return t.replace(/\s+/g," ").match(/[^.!?…]+[.!?…]*\s*/g)||[t]},
+  speak:function(parts,o){o=o||{};if(!TTS.ok){o.onEnd&&o.onEnd();return}
+    TTS.stop();var g=++TTS.gen,q=[];
+    parts.forEach(function(p,i){TTS.split(norm(p.text)).forEach(function(s){if(s.trim())q.push({s:s,i:i})})});
+    var k=0;(function next(){if(g!==TTS.gen)return;if(k>=q.length){o.onEnd&&o.onEnd();return}
+      var it=q[k++],u=new SpeechSynthesisUtterance(it.s);u.lang="ru-RU";if(TTS.voice)u.voice=TTS.voice;u.rate=TTS.rate;
+      u.onstart=function(){if(g===TTS.gen&&o.onPart)o.onPart(it.i)};u.onend=next;u.onerror=next;speechSynthesis.speak(u)})();
+  },
+  stop:function(){TTS.gen++;if(TTS.ok)speechSynthesis.cancel()}
+};
+function renderVoices(){
+  var sel=$("#voiceSel");
+  if(!TTS.voices.length){sel.innerHTML='<option>Русские голоса не найдены</option>';return}
+  sel.innerHTML=TTS.voices.map(function(v,i){return '<option value="'+i+'"'+(v===TTS.voice?" selected":"")+'>'+esc(v.name)+'</option>'}).join("");
+}
+var np=$("#np"),reading=null,curAudio=null,VIDEOS=[];
+function showNP(t){$("#npText").textContent=t;np.classList.add("on")}
+function hideNP(){np.classList.remove("on");if(reading){reading.btn.innerHTML=ICON_PLAY+"Слушать урок";$$(".reading").forEach(function(x){x.classList.remove("reading")});reading=null}}
+function stopAll(){TTS.stop();hideNP();VIDEOS.forEach(function(v){v.pause()});if(curAudio)curAudio.pause()}
+$("#npStop").onclick=function(){TTS.stop();hideNP()};
+
+function readable(d){return $$(".l-body > p, .l-body > h4, .l-body > ul > li, .l-body > ol > li, .l-body .callout p, .l-body .niche",d).filter(function(x){return !x.closest(".widget")&&!x.closest(".l-foot")})}
+function mmss(s){s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+":"+("0"+s%60).slice(-2)}
+function audioPlayer(d,src){
+  var tools=$(".l-tools",d),a=new Audio(src);a.preload="metadata";
+  tools.innerHTML='<div class="ap"><button type="button" class="ap-play" aria-label="Слушать урок">'+ICON_PLAY+'</button><div class="ap-mid"><b>Озвучка</b><input class="ap-seek" type="range" min="0" max="1000" value="0" aria-label="Перемотка"></div><span class="ap-time num">0:00</span><button type="button" class="ap-rate">1×</button></div>';
+  var pb=$(".ap-play",tools),seek=$(".ap-seek",tools),tm=$(".ap-time",tools),rb=$(".ap-rate",tools),rates=[1,1.25,1.5,0.85],ri=0;
+  var els=readable(d),w=els.map(function(x){return x.textContent.length}),tot=w.reduce(function(s,x){return s+x},0)+40;
+  function clear(){$$(".reading",d).forEach(function(x){x.classList.remove("reading")})}
+  function mark(p){var acc=40,pos=p*tot,hit=null;for(var k=0;k<els.length;k++){acc+=w[k];if(pos<=acc){hit=els[k];break}}$$(".reading",d).forEach(function(x){if(x!==hit)x.classList.remove("reading")});if(hit&&!hit.classList.contains("reading")){hit.classList.add("reading");var r=hit.getBoundingClientRect();if(r.top<80||r.bottom>innerHeight-90)hit.scrollIntoView({behavior:"smooth",block:"center"})}}
+  function upd(){var p=a.duration?a.currentTime/a.duration:0;seek.value=Math.round(p*1000);tm.textContent=mmss(a.currentTime)+" / "+mmss(a.duration);if(!a.paused)mark(p)}
+  a.addEventListener("loadedmetadata",upd);a.addEventListener("timeupdate",upd);
+  a.addEventListener("play",function(){pb.innerHTML=ICON_PAUSE});
+  a.addEventListener("pause",function(){pb.innerHTML=ICON_PLAY;clear()});
+  a.addEventListener("ended",clear);
+  pb.onclick=function(){if(a.paused){stopAll();curAudio=a;a.playbackRate=rates[ri];a.play().catch(function(){tm.textContent="Не удалось загрузить аудио"})}else a.pause()};
+  seek.oninput=function(){if(a.duration){a.currentTime=seek.value/1000*a.duration;upd()}};
+  rb.onclick=function(){ri=(ri+1)%rates.length;a.playbackRate=rates[ri];rb.textContent=String(rates[ri]).replace(".",",")+"×"};
+}
+LESSONS.forEach(function(d){
+  var tools=$(".l-tools",d);if(!tools)return;
+  if(AUDIO[d.dataset.lesson]){audioPlayer(d,AUDIO[d.dataset.lesson]);return}
+  if(!TTS.ok){tools.remove();return}
+  var b=document.createElement("button");b.type="button";b.className="btn";b.innerHTML=ICON_PLAY+"Слушать урок";tools.appendChild(b);
+  b.onclick=function(){
+    if(reading&&reading.btn===b){TTS.stop();hideNP();return}
+    stopAll();
+    var els=readable(d),title=$(".l-t",d).firstChild.textContent;
+    var parts=[{text:"Урок "+d.dataset.lesson+". "+title+".",el:null}].concat(els.map(function(x){return {text:x.textContent,el:x}}));
+    reading={btn:b};b.innerHTML=ICON_STOP+"Остановить";showNP("Урок "+d.dataset.lesson+" · "+title);
+    TTS.speak(parts,{onPart:function(i){$$(".reading").forEach(function(x){x.classList.remove("reading")});var el=parts[i].el;if(el){el.classList.add("reading");var r=el.getBoundingClientRect();if(r.top<80||r.bottom>innerHeight-90)el.scrollIntoView({behavior:"smooth",block:"center"})}},onEnd:hideNP});
+  };
+});
+
+/* ---------- сцены видео-разборов ---------- */
+var IC={
+  phone:'<svg viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M10.5 9.5v5l4-2.5z"/></svg>',
+  user:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5"/></svg>',
+  tg:'<svg viewBox="0 0 24 24"><path d="M21 4L3 11l6 2.2L19 7l-7.5 7.5L17.5 20z"/></svg>',
+  search:'<svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>',
+  shield:'<svg viewBox="0 0 24 24"><path d="M12 2.5l8 3v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10v-6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>',
+  chat:'<svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>',
+  chart:'<svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
+  cut:'<svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="3"/><circle cx="6" cy="17" r="3"/><path d="M8.5 8.5L20 19M8.5 15.5L20 5"/></svg>',
+  spark:'<svg viewBox="0 0 24 24"><path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg>',
+  team:'<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c.8-3.4 3.2-5 6-5s5.2 1.6 6 5M15 15c2.6 0 4.6 1.4 5.5 4"/></svg>',
+  cal:'<svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg>',
+  law:'<svg viewBox="0 0 24 24"><path d="M12 3v18M5 21h14M4 8h16M7 8l-3 6c1.5 1.5 4.5 1.5 6 0zM17 8l-3 6c1.5 1.5 4.5 1.5 6 0z"/></svg>',
+  money:'<svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="13" rx="2.5"/><path d="M2.5 10h19M7 15h3"/></svg>',
+  cam:'<svg viewBox="0 0 24 24"><rect x="2.5" y="6.5" width="13" height="11" rx="2"/><path d="M15.5 10.5l6-3.5v10l-6-3.5"/></svg>',
+  link:'<svg viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 006.4 0l3-3a4.5 4.5 0 00-6.4-6.4l-1.2 1.2M14 10a4.5 4.5 0 00-6.4 0l-3 3a4.5 4.5 0 006.4 6.4l1.2-1.2"/></svg>',
+  ban:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>',
+  star:'<svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>'
+};
+function dotsHTML(n,goneIdx){var h="";for(var i=0;i<n;i++){var g=goneIdx&&goneIdx.indexOf(i)>-1;h+='<i class="'+(g?"gone":"")+'" style="animation-delay:'+(i*0.06).toFixed(2)+'s'+(g?','+(2.6+goneIdx.indexOf(i)*0.15).toFixed(2)+'s':'')+'"></i>'}return h}
+var SC={
+  big:function(k,num,note,o){o=o||{};var isN=typeof num==="number";return '<div class="s-center"><div class="s-kick">'+k+'</div><div class="s-num'+(o.gold?" gold":"")+'"'+(o.color?' style="color:'+o.color+'"':'')+(isN?' data-c="'+num+'" data-s="'+(o.suf||"")+'">0':'>'+num)+'</div><div class="s-note">'+(note||"")+'</div></div>'},
+  flow:function(nodes){var h='<div class="flowline" style="grid-template-columns:'+nodes.map(function(_,i){return i?"1fr auto":"auto"}).join(" ")+'">';nodes.forEach(function(n,i){var d=(i*0.9).toFixed(1);if(i)h+='<div class="pipe" style="animation-delay:'+(i*0.9-0.4).toFixed(1)+'s"><i></i><i></i><i></i></div>';h+='<div class="node" style="animation-delay:'+d+'s"><div class="ic">'+IC[n[0]]+'</div><b>'+n[1]+'</b><small>'+(n[2]||"")+'</small></div>'});return h+'</div>'},
+  list:function(rows,res){return '<div class="formula">'+rows.map(function(r,i){return '<div class="'+(i===res?"res":"")+'" style="animation-delay:'+(0.2+i*0.8).toFixed(1)+'s"><span>'+r[0]+'</span><b>'+r[1]+'</b></div>'}).join("")+'</div>'},
+  chat:function(msgs){return '<div class="s-chat">'+msgs.map(function(m,i){return '<div class="bub '+(m[0]==="me"?"me":"them")+'" style="animation-delay:'+(0.3+i*1.3).toFixed(1)+'s">'+m[1]+'</div>'}).join("")+'</div>'},
+  bars:function(rows,suf){var mx=Math.max.apply(null,rows.map(function(r){return r[1]}));return '<div class="s-bars">'+rows.map(function(r,i){return '<div class="sb"><span>'+r[0]+'</span><div class="sb-t"><i style="--w:'+(r[1]/mx*100).toFixed(1)+'%;animation-delay:'+(0.3+i*0.5).toFixed(1)+'s'+(r[2]?';background:'+r[2]:'')+'"></i></div><b>'+fmt(r[1])+(suf||"")+'</b></div>'}).join("")+'</div>'},
+  check:function(items){return '<div class="s-check">'+items.map(function(t,i){return '<div class="sc" style="animation-delay:'+(0.3+i*0.9).toFixed(1)+'s"><i></i><span>'+t+'</span></div>'}).join("")+'</div>'},
+  dots:function(n,gone,k,num,note,o){return '<div class="s-grid"><div class="dots">'+dotsHTML(n,gone)+'</div>'+SC.big(k,num,note,o)+'</div>'},
+  phone:function(k,num,note){return '<div class="s-split"><div class="phone"><div class="feed"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>'+SC.big(k,num,note)+'</div>'}
+};
+var SCENES={
+1:[
+ {t:"Внимание — это товар",say:"Всё начинается с внимания. Десять роликов в день по две с половиной тысячи просмотров — это двадцать пять тысяч человек, которые увидели ваш контент. Бесплатно.",html:SC.phone("просмотров за день",25000,"10 роликов × 2 500 просмотров")},
+ {t:"Путь человека",say:"Человек смотрит ролик, заходит в профиль, жмёт на ссылку и попадает в телеграм-канал эксперта. Ссылка ваша, поэтому каждый пришедший засчитывается вам.",html:SC.flow([["phone","Ролик","Threads, Reels"],["user","Профиль","ваша ссылка"],["tg","Канал эксперта","Telegram"]])},
+ {t:"Заявки",say:"Без лица в кадре одна заявка приходит примерно на двести пятьдесят просмотров. Из двадцати пяти тысяч просмотров — около ста человек. Сорок из них — вот они.",html:SC.dots(40,null,"заявок за день",100,"25 000 ÷ 250 просмотров",{gold:true})},
+ {t:"Оплата",say:"Эксперт платит за каждого подписчика. Ориентир — от восьмидесяти до ста пятидесяти рублей. По сто рублей сорок человек — это четыре тысячи.",html:'<div class="pay"><div class="box"><b>Канал эксперта</b><small>40 подписчиков</small></div><div class="lane"><span class="coin">₽</span><span class="coin">₽</span><span class="coin">₽</span><span class="coin">₽</span><span class="coin">₽</span></div><div class="box"><b>Вы</b><small>по 100 ₽</small></div><div class="pay-total"><div class="s-num gold" data-c="4000" data-s=" ₽">0</div></div></div>'},
+ {t:"Отписки",say:"Часть людей уходит. Обычно двадцать — двадцать пять процентов. Это нормально, просто заранее договоритесь, как их считать.",html:SC.dots(40,[3,8,14,17,22,27,31,36,39],"отписались","−22%","остались 31 из 40",{color:"var(--bad)"})},
+ {t:"Лесенка оплаты",say:"Эксперт платит частями: каждые двадцать, тридцать или сорок человек, или раз в день. Если он пропадёт, вы потеряете максимум один шаг.",html:'<div class="ladder"><div class="s-kick" style="text-align:center">шаг оплаты — каждые 20 человек</div><div class="track"><i></i>'+[20,40,60,80].map(function(v,i){var d=(1.75*(i+1)-0.2).toFixed(2);return '<span class="cp" style="left:'+(25*(i+1))+'%;animation-delay:'+d+'s;animation-play-state:running"><em class="t">'+v+' чел.</em><em class="b" style="animation-delay:'+d+'s">+2 000 ₽</em></span>'}).join("")+'</div></div>'},
+ {t:"Формула",say:"Итоговая формула простая. Просмотры делим на просмотры на заявку, вычитаем отписки и умножаем на цену подписчика. Дальше всё упирается в вашу регулярность.",html:SC.list([["Просмотры в день","25 000"],["÷ 250 = заявки","100"],["− 20% отписок","80"],["× 100 ₽ = в день","8 000 ₽"]],3)}
+]};
+window.GT_SCENES=SCENES; window.GT_SC=SC;
+
+function countUp(el,to,dur,suf){var t0=null;suf=suf||"";function f(t){if(!t0)t0=t;var p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3);el.textContent=fmt(to*e)+suf;if(p<1&&el.isConnected)requestAnimationFrame(f)}requestAnimationFrame(f)}
+function Video(box,m){
+  var scenes=SCENES[m];if(!scenes){box.remove();return null}
+  box.innerHTML='<h3>Видео-разбор модуля</h3><p class="sub">'+scenes.length+' сцен · около '+Math.max(1,Math.round(scenes.reduce(function(a,s){return a+s.say.length},0)/850))+' мин · '+(Object.keys(VAUDIO).some(function(k){return k.indexOf(m+"-")===0})?'с озвучкой':'с субтитрами')+'</p>'+
+   '<div class="stage"><div class="scene-title"></div><div class="scene"></div><div class="cap"><span></span></div><button class="big-play" aria-label="Смотреть видео-разбор"><span><svg viewBox="0 0 24 24"><path d="M6 4v16l14-8z"/></svg></span></button></div>'+
+   '<div class="vbar"><button class="ctrl v-play" aria-label="Пауза или воспроизведение"><svg viewBox="0 0 24 24"><path d="M6 4v16l14-8z"/></svg></button><div class="segs"></div><button class="mute" aria-pressed="false">Звук: вкл</button></div>';
+  var sc=$(".scene",box),title=$(".scene-title",box),cap=$(".cap span",box),big=$(".big-play",box),play=$(".v-play",box),segs=$(".segs",box),mute=$(".mute",box);
+  var i=0,playing=false,tm=null,raf=null,muted=false,api={},vau=null;
+  /* один аудио-элемент на всё видео: на iPhone его «разблокирует» первое нажатие */
+  function vAudio(){if(!vau){vau=new Audio();vau.preload="auto"}return vau}
+  function unlock(){var au=vAudio();if(!au.src){au.src=VAUDIO[m+"-"+i]||"";var p=au.play();if(p&&p.catch)p.catch(function(){});}}
+  var hasAudio=Object.keys(VAUDIO).some(function(k){return k.indexOf(m+"-")===0});if(!hasAudio){mute.hidden=true;muted=true}
+  segs.innerHTML=scenes.map(function(s,k){return '<button type="button" aria-label="Сцена '+(k+1)+': '+esc(s.t)+'"><i><b></b></i></button>'}).join("");
+  var segBtns=$$("button",segs);
+  function draw(){
+    var s=scenes[i];title.textContent=(i+1)+" / "+scenes.length+" · "+s.t;sc.innerHTML=s.html;cap.textContent=s.say;
+    $$("[data-c]",sc).forEach(function(el){countUp(el,+el.dataset.c,2200,el.dataset.s||"")});
+    segBtns.forEach(function(b,k){b.classList.toggle("past",k<i);$("b",b).style.width=k<i?"100%":"0"});
+  }
+  function animSeg(dur){cancelAnimationFrame(raf);var bar=$("b",segBtns[i]),t0=performance.now();(function f(t){var p=Math.min(1,(t-t0)/dur);bar.style.width=(p*100)+"%";if(p<1&&playing)raf=requestAnimationFrame(f)})(t0)}
+  function next(){if(!playing)return;if(i<scenes.length-1){i++;draw();run()}else{playing=false;setIcon();big.hidden=false;i=0}}
+  function run(){clearTimeout(tm);var s=scenes[i],est=Math.max(5000,s.say.length*62/(TTS.rate||1));animSeg(est);
+    var t0=Date.now(),va=VAUDIO[m+"-"+i];
+    if(!muted&&va){var au=vAudio();curAudio=au;au.onended=function(){if(playing){$("b",segBtns[i]).style.width="100%";tm=setTimeout(next,500)}};au.onloadedmetadata=function(){animSeg(au.duration*1000)};au.src=va;au.play().catch(function(){tm=setTimeout(next,est)})}
+    else if(!muted&&TTS.voices.length){TTS.speak([{text:s.say}],{onEnd:function(){if(playing){var wait=Math.max(700,est*0.6-(Date.now()-t0));tm=setTimeout(function(){$("b",segBtns[i]).style.width="100%";next()},wait)}}})}
+    else tm=setTimeout(next,est);}
+  function setIcon(){play.innerHTML=playing?'<svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>':'<svg viewBox="0 0 24 24"><path d="M6 4v16l14-8z"/></svg>'}
+  api.play=function(){if(playing)return;stopAll();if(!muted&&VAUDIO[m+"-0"])unlock();playing=true;big.hidden=true;setIcon();draw();run()};
+  api.pause=function(){if(!playing)return;playing=false;clearTimeout(tm);cancelAnimationFrame(raf);TTS.stop();if(curAudio)curAudio.pause();setIcon()};
+  big.onclick=function(){api.play()};
+  play.onclick=function(){playing?api.pause():api.play()};
+  segBtns.forEach(function(b,k){b.onclick=function(){var was=playing;api.pause();i=k;draw();big.hidden=true;if(was)api.play()}});
+  mute.onclick=function(){muted=!muted;mute.textContent=muted?"Звук: выкл":"Звук: вкл";mute.setAttribute("aria-pressed",muted);if(playing){TTS.stop();if(curAudio)curAudio.pause();clearTimeout(tm);run()}};
+  draw();
+  return api;
+}
+
+/* ---------- домашние задания ---------- */
+function copyText(t,done){
+  function fallback(){var ta=document.createElement("textarea");ta.value=t;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();var ok=false;try{ok=document.execCommand("copy")}catch(e){}ta.remove();return ok}
+  try{navigator.clipboard.writeText(t).then(function(){done(true)},function(){done(fallback())})}catch(e){done(fallback())}
+}
+$$(".panel.hw").forEach(function(p){
+  var m=p.dataset.m,tasks=$$(".task",p);
+  var h4=$("h4",p);
+  h4.insertAdjacentHTML("afterend",'<p class="sub">Ответы сохраняются на этом устройстве. Когда закончите, скопируйте всё одним сообщением и отправьте куратору.</p><div class="field"><label for="hwName'+m+'">Ваше имя или ник в Telegram</label><input id="hwName'+m+'" class="hw-name" type="text" autocomplete="nickname" placeholder="Например, @ivan"></div>');
+  tasks.forEach(function(t,k){var ta=$("textarea",t);ta.id="hw"+m+"-"+k;var key="m"+m+"-"+k;ta.value=S.hw[key]||"";ta.addEventListener("input",function(){S.hw[key]=ta.value;save()})});
+  p.insertAdjacentHTML("beforeend",'<div class="send"><div class="row">'+CURATORS.map(function(c,k){var dat=c[0]==="Эдем"?"Эдему":c[0]==="Алина"?"Алине":c[0];return '<a class="btn'+(k?"":" solid")+'" href="https://t.me/'+c[1]+'" target="_blank" rel="noopener" data-send="'+k+'">Отправить '+dat+'</a>'}).join("")+'</div><p class="hint">Кнопка скопирует ваши ответы и откроет чат с куратором в Telegram — просто вставьте сообщение.</p><p class="status" aria-live="polite"></p></div>');
+  var nm=$(".hw-name",p);nm.value=S.hw.name||"";nm.addEventListener("input",function(){S.hw.name=nm.value;save();$$(".hw-name").forEach(function(x){if(x!==nm)x.value=nm.value})});
+  $$("[data-send]",p).forEach(function(b){b.onclick=function(){
+    var st=$(".status",p),cur=CURATORS[+b.dataset.send];
+    var t="GТрафф · Домашнее задание · Модуль "+m+"\nОт: "+(nm.value.trim()||"—")+"\n",filled=0;
+    tasks.forEach(function(tk,k){var ta=$("textarea",tk),v=ta.value.trim();if(v)filled++;t+="\n"+(k+1)+". "+ta.dataset.q+"\n"+(v||"(нет ответа)")+"\n"});
+    copyText(t,function(ok){
+      st.style.color=ok?"var(--ok)":"var(--bad)";
+      if(!ok){st.textContent="Не получилось скопировать автоматически. Выделите ответы и скопируйте вручную.";return}
+      st.textContent="Ответы скопированы"+(filled<tasks.length?" (заполнено "+filled+" из "+tasks.length+")":"")+". Вставьте их в чат с куратором ("+cur[0]+", @"+cur[1]+").";
+    });
+  }});
+});
+
+/* ---------- тесты ---------- */
+var TESTS={
+1:[
+ ["Что такое УБТ?",["Условно-бесплатный трафик: люди приходят с контента, а не с купленной рекламы","Трафик, за который платит сама площадка","Реклама у блогеров"],0,"Вы не платите за показы, а делаете контент, который алгоритм показывает бесплатно."],
+ ["Кто платит вам в модели «залив на экспертов»?",["Площадка — за просмотры","Эксперт — за приведённых подписчиков","Подписчики — за вход в канал"],1,"Эксперту нужны живые подписчики, за них он и платит."],
+ ["Какой ориентир цены за одного подписчика?",["10–20 ₽","80–150 ₽","около 1 000 ₽"],1,"80–150 ₽ в зависимости от ниши и качества аудитории."],
+ ["Сколько примерно просмотров нужно на одну заявку, если вы без лица в кадре?",["Около 25","Около 250","Около 2 500"],1,"Без лица около 250, с лицом 80–150."],
+ ["Зачем нужна лесенка оплаты?",["Чтобы эксперт платил больше","Чтобы не считать отписки","Чтобы риск неоплаты был небольшим"],2,"Если эксперт пропадёт, вы потеряете максимум один шаг."],
+ ["Зачем своя пригласительная ссылка в канал эксперта?",["Это обязательное требование Telegram","Чтобы видеть, сколько людей пришло именно от вас","Чтобы канал рос быстрее"],1,"По своей ссылке вы считаете вступления и отписки и подтверждаете результат."],
+ ["Отписалась примерно пятая часть приведённых людей. Что это значит?",["Это нормальный уровень, 20–25% — обычное дело","Всё пропало, контент не работает","Эксперт вас обманывает"],0,"Отписки есть всегда. Важно заранее договориться, как их считать."],
+ ["Почему трафик называется «условно» бесплатным?",["Площадка забирает процент","Бесплатно только первый месяц","Вы платите временем, устройствами и аккаунтами вместо рекламного бюджета"],2,"Деньги на рекламу заменяются работой: контентом, временем и аккаунтами."]
+]};
+window.GT_TESTS=TESTS;
+
+/* ---------- виджеты модулей ---------- */
+var W={};window.GT_W=W;
+function segInit(id,cb,initial){var box=document.getElementById(id);if(!box)return;var val=initial;function set(v){val=v;$$("button",box).forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.v===String(v)))});cb(v)}box.addEventListener("click",function(e){var b=e.target.closest("button");if(b)set(b.dataset.v)});set(initial===undefined?$("button",box).dataset.v:initial)}
+window.GT_segInit=segInit;window.GT_copy=copyText;window.GT_fmt=fmt;window.GT_rub=rub;window.GT_esc=esc;window.GT_save=save;window.GT_S=S;
+
+/* M1: лесенка */
+W.ladder=function(){
+  if(!$("#ladderWidget"))return;
+  var step=20,ppl=$("#ladPpl"),price=$("#ladPrice"),track=$("#ladTrack"),fill=$("#ladFill"),running=null;
+  function calc(){
+    var n=+ppl.value,p=+price.value,st=step==="day"?n:step,pays=Math.floor(n/st),paid=pays*st*p,risk=st*p;
+    $("#ladPplO").textContent=n+" чел.";$("#ladPriceO").textContent=p+" ₽";
+    $("#ladPays").textContent=pays;$("#ladSum").textContent=rub(paid);$("#ladRisk").textContent=rub(risk);
+    var rest=n-pays*st;
+    $("#ladNote").textContent=(step==="day"?"Оплата раз в день: под риском весь дневной объём. Подходит, когда эксперт уже проверен.":"Если эксперт пропадёт, вы потеряете не больше одного шага — "+rub(risk)+".")+(rest>0&&step!=="day"?" Ещё "+rest+" чел. перейдут в следующий шаг.":"");
+    $$(".sim-mark",track).forEach(function(m){m.remove()});
+    for(var k=1;k<=pays;k++){var m=document.createElement("span");m.className="sim-mark on";m.style.left=(k*st/n*100)+"%";m.innerHTML="<em>+"+fmt(st*p)+"</em>";track.appendChild(m)}
+    fill.style.width="100%";
+  }
+  segInit("ladStep",function(v){step=v==="day"?"day":+v;calc()},"20");
+  ppl.oninput=calc;price.oninput=calc;
+  $("#ladRun").onclick=function(){
+    cancelAnimationFrame(running);var marks=$$(".sim-mark",track);marks.forEach(function(m){m.classList.remove("on")});
+    var t0=performance.now(),dur=3200;(function f(t){var p=Math.min(1,(t-t0)/dur);fill.style.width=(p*100)+"%";marks.forEach(function(m){if(parseFloat(m.style.left)<=p*100+0.1)m.classList.add("on")});if(p<1)running=requestAnimationFrame(f)})(t0);
+  };
+};
+/* M1: калькулятор */
+W.calc=function(){
+  if(!$("#calcWidget"))return;
+  var vpj=250,mode="stay";
+  function calc(){
+    var posts=+$("#cPosts").value,views=+$("#cViews").value,price=+$("#cPrice").value,churn=+$("#cChurn").value/100;
+    $("#cPostsO").textContent=posts;$("#cViewsO").textContent=fmt(views);$("#cPriceO").textContent=price+" ₽";$("#cChurnO").textContent=Math.round(churn*100)+"%";
+    var tv=posts*views,j=tv/vpj,stay=j*(1-churn),payN=mode==="stay"?stay:j,day=payN*price;
+    $("#cR1").textContent=fmt(tv);$("#cR2").textContent=fmt(j);$("#cR3").textContent=fmt(stay);$("#cR4").textContent=rub(day);$("#cR5").textContent=rub(day*30);
+    var notes=[];
+    if(views>=5000)notes.push("Средние "+fmt(views)+" просмотров — это высокий уровень. На старте чаще бывает 300–1 500.");
+    if(posts>12)notes.push("Больше 12 роликов в день в одиночку — уже контент-ферма. Об этом модуль 8.");
+    if(views<=800&&posts<=5)notes.push("Скромный, но честный старт. С ростом навыка растут и просмотры.");
+    var n=$("#cNote");n.textContent=notes.join(" ");n.className="w-note"+(views>=5000||posts>12?" warn":"");
+  }
+  segInit("cFace",function(v){vpj=+v;calc()},"250");
+  segInit("cMode",function(v){mode=v;calc()},"stay");
+  ["cPosts","cViews","cPrice","cChurn"].forEach(function(id){$("#"+id).oninput=calc});
+  calc();
+};
+/* универсальный тренажёр «ситуации»: data-cases = ключ в CASES */
+var CASES={
+ scam:{a:"Нормально",b:"Красный флаг",items:[
+  ["Эксперт предлагает привести 300 человек, а оплатить всё разом в конце месяца.","b","Большая сумма в конце месяца — большой риск. Договаривайтесь о лесенке: каждые 20–40 человек или раз в день."],
+  ["Эксперт сам выдаёт права на пригласительные ссылки и предлагает считать людей через бота.","a","Так и должно быть: прозрачный учёт выгоден обоим."],
+  ["Вас просят оплатить «вступительный взнос», чтобы получить доступ к базе экспертов для залива.","b","Платят вам, а не вы. Любая предоплата с вашей стороны — повод уйти."],
+  ["После первой партии эксперт пишет, что половина людей — боты, хотя статистика ссылки нормальная.","b","Спорьте цифрами: вступления, отписки, активность. Если условия меняют задним числом, заканчивайте работу после оплаченной партии."],
+  ["Эксперт просит не обещать в роликах быстрый заработок, чтобы не испортить аудиторию канала.","a","Он бережёт репутацию канала. Аудитория будет качественнее, а отписок меньше."]]}
+};
+window.GT_CASES=CASES;
+W.cases=function(){
+  $$("[data-cases]").forEach(function(wrap){
+    var key=wrap.dataset.cases,C=CASES[key];if(!C)return;
+    var box=$(".cases",wrap),scoreEl=$(".score",wrap);S.w["c-"+key]=S.w["c-"+key]||{};var ans=S.w["c-"+key];
+    function render(){
+      var n=0;
+      box.innerHTML=C.items.map(function(c,k){var a=ans[k],v="";if(a){var ok=a===c[1];if(ok)n++;v='<div class="verdict '+(ok?"ok":"no")+'"><b>'+(ok?"Верно":"Не совсем")+'. Правильный ответ: '+(c[1]==="a"?C.a:C.b).toLowerCase()+'.</b>'+c[2]+'</div>'}
+        return '<div class="case" data-k="'+k+'"><p>'+c[0]+'</p><div class="row"><button type="button" data-a="a">'+C.a+'</button><button type="button" data-a="b">'+C.b+'</button></div>'+v+'</div>'}).join("");
+      if(scoreEl)scoreEl.textContent=n+" / "+C.items.length;
+    }
+    box.onclick=function(e){var b=e.target.closest("[data-a]");if(!b)return;ans[b.closest(".case").dataset.k]=b.dataset.a;save();render()};
+    render();
+  });
+};
+
+window.GT_init=function(){
+  /* видео */
+  $$("[data-video]").forEach(function(box){var v=Video(box,+box.dataset.video);if(v)VIDEOS.push(v)});
+  /* тесты */
+  $$(".panel.test").forEach(function(p){
+    var m=p.dataset.m,Q=TESTS[m];if(!Q){p.remove();return}
+    var need=Math.ceil(Q.length*0.75);
+    p.innerHTML='<h4>Тест модуля</h4><p class="sub">'+Q.length+' вопросов. Модуль засчитывается от '+need+' правильных ответов. Можно пересдавать.</p><div class="qs" style="display:grid;gap:16px"></div><div class="test-res"><span class="big num"></span><span class="msg"></span><button class="btn ghost" type="button">Пройти заново</button></div>';
+    var box=$(".qs",p);S.test["m"+m]=S.test["m"+m]||{};var ans=S.test["m"+m];
+    function render(){
+      box.innerHTML=Q.map(function(q,k){var a=ans[k];return '<div class="q" data-k="'+k+'"><b>'+(k+1)+'. '+q[0]+'</b>'+q[1].map(function(o,j){var c="";if(a!==undefined&&j===a)c=(a===q[2]?" ok":" no");return '<button type="button" class="opt'+c+'" data-j="'+j+'">'+o+'</button>'}).join("")+(a!==undefined?'<p class="why">'+(a===q[2]?"Верно. ":"Неверно. ")+q[3]+'</p>':'')+'</div>'}).join("");
+      var n=0,cnt=0;for(var k in ans){cnt++;if(ans[k]===Q[k][2])n++}
+      $(".big",p).textContent=n+" / "+Q.length;
+      var r=$(".test-res",p);r.classList.toggle("pass",cnt===Q.length&&n>=need);
+      $(".msg",p).textContent=cnt<Q.length?"Отвечено "+cnt+" из "+Q.length+".":(n>=need?"Модуль засчитан. Можно переходить дальше.":"Нужно "+need+" из "+Q.length+". Перечитайте уроки и пройдите заново.");
+      renderProgress();
+    }
+    box.onclick=function(e){var b=e.target.closest(".opt");if(!b)return;ans[b.closest(".q").dataset.k]=+b.dataset.j;save();render()};
+    $(".test-res .btn",p).onclick=function(){for(var k in ans)delete ans[k];save();render()};
+    render();
+  });
+  /* переход к следующему модулю */
+  MODS.forEach(function(m,i){var nx=MODS[i+1];if(!nx)return;m.el.insertAdjacentHTML("beforeend",'<a class="next" href="#m'+nx.n+'"><span class="eyebrow">Следующий модуль</span><h3>Модуль '+nx.n+'. '+esc(nx.t)+'</h3><p>'+esc(nx.d)+'</p></a>')});
+  for(var k in W){try{W[k]()}catch(e){console.error("widget "+k,e)}}
+  renderProgress();
+};
+
+document.addEventListener("visibilitychange",function(){if(document.hidden){stopAll()}});
+})();
+
+</script>
+<script>GT_init();</script>
+</body>
+</html>
